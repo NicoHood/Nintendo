@@ -1,0 +1,41 @@
+#######################################
+# Syntax Coloring Map For MediaKeys
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+Gamecube	KEYWORD3
+
+begin	KEYWORD2
+end	KEYWORD2
+init	KEYWORD2
+read	KEYWORD2
+write	KEYWORD2
+send	KEYWORD2
+get	KEYWORD2
+sendget	KEYWORD2
+translate_raw_data	KEYWORD2
+buttons1	KEYWORD2
+buttons2	KEYWORD2
+xAxis	KEYWORD2
+yAxis	KEYWORD2
+cxAxis	KEYWORD2
+cyAxis	KEYWORD2
+
+#######################################
+# Instances (KEYWORD2)
+#######################################
+
+status	KEYWORD2
+report	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+

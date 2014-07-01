@@ -1,0 +1,247 @@
+
+body {
+		font-family:arial, times, lucida, geneva, sans-serif;
+}
+
+A      { color:222288 }
+
+/* heading styles */
+H1		{  
+		border:1px solid black;
+			background-color: d0d0f0;
+			background: d0d0f0;
+			color: 000000;
+			padding: 10px;
+			font-size:180%;
+		}
+H2		{  
+		border:1px solid black;
+			background-color: d0d0f0;
+			background: d0d0f0;
+			color: 000000;
+			padding: 5px;
+			font-size:160%;
+		}
+H3		{   
+		border:1px solid black;
+			background-color: d0d0f0;
+			background: d0d0f0;
+			color: 000000;
+			padding: 5px;
+			font-size:140%;
+		}
+H4		{  
+		border:1px solid black;
+			background-color: d0d0f0;
+			background: d0d0f0;
+			color: 000000;
+			padding: 5px;
+			font-size:120%;
+		}
+H5		{  
+		border:1px solid black;
+			background-color: d0d0f0;
+			background: d0d0f0;
+			padding: 5px;
+			color: 000000;
+		}
+H6		{  
+		border:1px solid black;
+			background-color: d0d0f0;
+			background: d0d0f0;
+			padding: 5px;
+			color: 000000;
+		}
+
+/* lists */
+UL		{  
+			background-color: FFFFFF;
+			background: FFFFFF;
+			color: 882288;
+		}
+LI		{  
+			background-color: FFFFFF;
+			background: FFFFFF;
+			color: 000000;
+		}
+
+/* table on top-level is only used to group things
+   together _without_ visually indicating it */
+
+
+/* table on top-level is only used to group things
+   together _without_ visually indicating it */
+
+TABLE { 
+			background-color: ffffff; 
+/*			color: 000000; */
+			border: 0px none #000;
+			padding: 0px;
+			margin: 5px;
+			position: relative, left;
+	  }
+
+
+DIV.P TABLE B {
+			background-color: e8e8ff; 
+		}
+
+TABLE TABLE TD TABLE {
+			border: 1px solid #d8d8ef;
+			padding: 0px;
+			margin: 0px;
+			width: 100%;
+		}
+
+TD {
+			background-color: ffffff; 
+/*			color: 000000; */
+			border: 0px none #000;
+			padding: 0px;
+			margin: 0px;
+   }
+
+TR {
+			background-color: ffffff; 
+/*			color: 000000; */
+			border: 0px none #000;
+			padding: 0px;
+			margin: 0px;
+   }
+
+
+
+TABLE TABLE { 
+			background-color: 000000; 
+/*			color: 000000; */
+			border: 0px none #000;
+			padding: 0px;
+			margin: 0px;
+			width: auto;
+	  }
+
+TABLE TABLE TD {
+			background-color: e8e8ff; 
+/*			color: 000000; */
+			border: 0px none #000;
+			padding: 2px 5px 2px 5px;
+			margin: 0px;
+   }
+
+TABLE TABLE TR {
+			background-color: ffffff; 
+/*			color: 000000; */
+			border: 0px none #000;
+			padding: 0px;
+			margin: 0px;
+   }
+
+
+/* links to the index */
+div.idx {
+	background-color: ffffff;
+	color: 000000;
+	text-align:right;
+	font-size:80%;
+	font-family:fixed, lucida, arial, geneva, sans-serif;
+}
+
+div.idx A { 
+	color:222255;
+}
+
+div.head {
+	border:0px none black;
+	background-color: ffffff;
+	background: ffffff;
+	color: 000000;
+	padding: 0px;
+	font-size: 15px;
+	margin: 0px;
+	text-align:right;
+	vertical-align:middle;
+}
+
+div.head h1 {
+	border:1px solid black;
+	background-color: d0d0f0;
+	background: d0d0f0;
+	color: 000000;
+	padding: 2px;
+	font-size: 15px;
+	margin: 0px;
+	text-align:right;
+	vertical-align:middle;
+}
+
+div.idxfrm {
+	border:0px none black;
+	background-color: ffffff;
+	background: ffffff;
+	color: 000000;
+	padding: 0px;
+	font-size:100%;
+	margin: 0px;
+}
+
+.idxfrm ul {
+	margin-left:0em;
+	padding-left:0em;
+}
+.idxfrm ul ul {
+	margin-left:0.25em;
+	padding-left:0.25em;
+}
+
+
+.idxfrm li {
+	list-style-type:none;
+	background-color: ffffff;
+	color: 000000;
+	font-size:90%;
+	padding: 0px;
+	margin: 0px;
+}
+
+.idxfrm ul li {
+	background-color: ffffff;
+	color: 000000;
+	font-size:70%;
+	padding: 0px;
+	margin: 0px;
+}
+
+.idxfrm ul li ul {
+	background-color: ffffff;
+	color: 000000;
+	font-size:50%;
+	padding: 0px;
+	margin: 0px;
+}
+
+
+/* table of contents */
+.TofC {
+	background-color: ffffff;
+	color: 000000;
+	font-size:100%;
+}
+
+.TofC li {
+	list-style-type:none;
+	background-color: ffffff;
+	color: 000000;
+	font-size:150%;
+}
+
+.TofC ul li {
+	background-color: ffffff;
+	color: 000000;
+	font-size:100%;
+}
+
+.TofC ul li ul {
+	background-color: ffffff;
+	color: 000000;
+	font-size:80%;
+}

@@ -1,0 +1,988 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="GENERATOR" content="techdoc v0.0.1">
+<link rel="stylesheet" type="text/css" href="Yet%20Another%20Gamecube%20Documentation-Dateien/techdoc.css">
+</head><body><br><title> Yet Another Gamecube Documentation</title>
+
+<h2><a name="sec9">
+9</a>&nbsp;&nbsp;Joy-Bus Devices</h2>
+<br><div class="idx"><a href="http://hitmen.c02.at/files/yagcd/yagcd/index.html#idx9.1">index</a></div>
+<h3>
+<a name="sec9.1">
+9.1</a>&nbsp;&nbsp;ID and Device List</h3>
+<br>
+The device ID can be read by sending the SI Command 0x00, and then
+reading 3 bytes from the respective device. The response-data looks
+like this:<br><br>
+first comes a 16bit device id:<br><br><table><tbody><tr><td align="center" nowrap="nowrap">
+<table>
+<tbody><tr>
+<td align="center" nowrap="nowrap"><b>ID</b></td>
+<td nowrap="nowrap"><b>Device</b></td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap"><tt>0x0500</tt></td>
+<td nowrap="nowrap">? N64 Controller</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap"><tt>0x0001</tt></td>
+<td nowrap="nowrap">? N64 Microphone</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap"><tt>0x0002</tt></td>
+<td nowrap="nowrap">? N64 Keyboard</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap"><tt>0x0200</tt></td>
+<td nowrap="nowrap">? N64 Mouse</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap"><tt>0x0004</tt></td>
+<td nowrap="nowrap">GBA</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap"><tt>0x0800</tt></td>
+<td nowrap="nowrap">GBA (n/a)</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap"><tt>0x0900</tt></td>
+<td nowrap="nowrap">GC Standard Controller</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap"><tt>0xe960</tt></td>
+<td nowrap="nowrap">? GC Wavebird Receiver</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap"><tt>0xe9a0</tt></td>
+<td nowrap="nowrap">? GC Wavebird</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap"><tt>0xa800</tt></td>
+<td nowrap="nowrap">? GC Wavebird</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap"><tt>0xebb0</tt></td>
+<td nowrap="nowrap">? GC Wavebird</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap"><tt>0x0820</tt></td>
+<td nowrap="nowrap">GC Keyboard</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap"><tt>0x0800</tt></td>
+<td nowrap="nowrap">? GC Steering Wheel</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap"><tt>0x0900</tt></td>
+<td nowrap="nowrap">DKongas (same as std Controller)</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">?</td>
+<td nowrap="nowrap">Resident Evil4 Chainsaw</td>
+</tr>
+</tbody></table>
+</td></tr></tbody></table>
+<br><br><table><tbody><tr><td align="center" nowrap="nowrap">
+<tt></tt>
+<table>
+<tbody><tr>
+<td align="center" nowrap="nowrap"><b>bit(s)</b></td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap"><b>description</b></td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">15</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">wireless (1: wireless Controller)</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">14</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">wireless receive (0: not wireless 1: wireless)</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">13</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">Rumble Motor (0: available 1: not available)</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">12</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">Type of Controller (always 0 ?)</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">11</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">Type of Controller (0: N64 1: Dolphin)</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">10</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">wireless type (0:IF 1:RF)</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">9</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">wireless state (0: variable 1: fixed)</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">8</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">0: non standard Controller 1: Dolphin Standard Controller</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">7</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">&nbsp;</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">6</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">&nbsp;</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">5</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">wireless origin (0:invalid 1:valid)</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">4</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">wireless fix id (0:not fixed 1:fixed)</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">3</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">wireless type - 0:normal 1: non-controller (?)</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">2</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">wireless type - 0:normal 1: lite controller</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">1</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">wireless type - </td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">0</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">wireless type - </td>
+</tr>
+</tbody></table>
+</td></tr></tbody></table>
+<tt></tt>&nbsp;<br><tt></tt>&nbsp;<br>
+the device id is followed by 8 status bits:<tt></tt>&nbsp;<br><tt></tt>&nbsp;<br><table><tbody><tr><td align="center" nowrap="nowrap">
+<tt></tt>
+<table>
+<tbody><tr>
+<td align="center" nowrap="nowrap"><b>bit(s)</b></td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap"><b>description</b></td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">7</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">?</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">6</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">?</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">5</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">?</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">4</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">?</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">3</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">? rumble motor running</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">2</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">?</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">1</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">?</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">0</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">?</td>
+</tr>
+</tbody></table>
+</td></tr></tbody></table>
+<br><div class="idx"><a href="http://hitmen.c02.at/files/yagcd/yagcd/index.html#idx9.2">index</a></div>
+<h3>
+<a name="sec9.2">
+9.2</a>&nbsp;&nbsp;standard Controller</h3>
+<br><div class="idx"><a href="http://hitmen.c02.at/files/yagcd/yagcd/index.html#idx9.2.1">index</a></div>
+<h4>
+<a name="sec9.2.1">
+9.2.1</a>&nbsp;&nbsp;Init</h4>
+<br><ul>
+<li> enable all controllers in 0xcc006430
+</li>
+<li> set Joy-channel 1-4 Command Register to 0x00400300
+</li>
+<li> clear SI i/o buffer
+</li>
+<li> wait until bit 31 of 0xCC006434 is 0, then set it to 1
+</li>
+</ul>
+Command Word
+0x00400000 - enable polling
+0x00000300 - ?
+0x00000100 - ?
+0x00000001 - enable rumble motor<br><br>
+Commands:
+0x00 - get id+status
+0x40 - ?
+0x41 - get origins
+0x42 - calibrate ?
+      <div class="idx"><a href="http://hitmen.c02.at/files/yagcd/yagcd/index.html#idx9.2.2">index</a></div>
+<h4>
+<a name="sec9.2.2">
+9.2.2</a>&nbsp;&nbsp;Read Controller Status</h4>
+<br><ul>
+<li> simply read all Joy-channel registers and extract the info you want
+</li>
+</ul>
+<table>
+<tbody><tr><td nowrap="nowrap"><b>first input word</b></td></tr>
+<tr><td nowrap="nowrap">
+<table>
+<tbody><tr>
+<td align="center" nowrap="nowrap"><b>bit(s)</b></td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap"><b>Description</b></td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">31</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">ERRSTAT - (assumed 0)</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">30</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">ERRLATCH - (assumed 0)</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">29</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">unused (?)</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">28</td>
+<td align="center" nowrap="nowrap">s</td>
+<td nowrap="nowrap">Start Button</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">27</td>
+<td align="center" nowrap="nowrap">y</td>
+<td nowrap="nowrap">Y Button</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">26</td>
+<td align="center" nowrap="nowrap">x</td>
+<td nowrap="nowrap">X Button</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">25</td>
+<td align="center" nowrap="nowrap">b</td>
+<td nowrap="nowrap">B Button</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">24</td>
+<td align="center" nowrap="nowrap">a</td>
+<td nowrap="nowrap">A Button</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">23</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">unused (?)</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">22</td>
+<td align="center" nowrap="nowrap">L</td>
+<td nowrap="nowrap">L Trigger</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">21</td>
+<td align="center" nowrap="nowrap">R</td>
+<td nowrap="nowrap">R Trigger</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">20</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">Z Trigger</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">19</td>
+<td align="center" nowrap="nowrap">u</td>
+<td nowrap="nowrap">D-Pad Up</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">18</td>
+<td align="center" nowrap="nowrap">d</td>
+<td nowrap="nowrap">D-Pad Down</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">17</td>
+<td align="center" nowrap="nowrap">r</td>
+<td nowrap="nowrap">D-Pad Right</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">16</td>
+<td align="center" nowrap="nowrap">l</td>
+<td nowrap="nowrap">D-Pad Left</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">8-15</td>
+<td align="center" nowrap="nowrap">x</td>
+<td nowrap="nowrap">Analog Stick X (8bit unsigned, ~32...128...~224)</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">0-7</td>
+<td align="center" nowrap="nowrap">y</td>
+<td nowrap="nowrap">Analog Stick Y (8bit unsigned, ~32...128...~224)</td>
+</tr>
+</tbody></table>
+</td></tr>
+</tbody></table>
+<br><br><table>
+<tbody><tr><td nowrap="nowrap"><b>second input word</b></td></tr>
+<tr><td nowrap="nowrap">
+<table>
+<tbody><tr>
+<td align="center" nowrap="nowrap"><b>bit(s)</b></td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap"><b>Description</b></td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">24-31</td>
+<td align="center" nowrap="nowrap">x</td>
+<td nowrap="nowrap">Analog C Stick X (8bit unsigned, ~32...128...~224)</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">16-23</td>
+<td align="center" nowrap="nowrap">y</td>
+<td nowrap="nowrap">Analog C Stick Y (8bit unsigned, ~32...128...~224)</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">8-15</td>
+<td align="center" nowrap="nowrap">l</td>
+<td nowrap="nowrap">L Trigger Analog (8bit unsigned, ~32...~224)</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">0-7</td>
+<td align="center" nowrap="nowrap">r</td>
+<td nowrap="nowrap">R Trigger Analog (8bit unsigned, ~32...~224)</td>
+</tr>
+</tbody></table>
+</td></tr>
+</tbody></table>
+<br><div class="idx"><a href="http://hitmen.c02.at/files/yagcd/yagcd/index.html#idx9.2.3">index</a></div>
+<h4>
+<a name="sec9.2.3">
+9.2.3</a>&nbsp;&nbsp;rumble Motor On</h4>
+<br>
+*(volatile unsigned long*)0xCC006400 = 0x00400001;
+*(volatile unsigned long*)0xCC006438 = 0x80000000;
+      <div class="idx"><a href="http://hitmen.c02.at/files/yagcd/yagcd/index.html#idx9.2.4">index</a></div>
+<h4>
+<a name="sec9.2.4">
+9.2.4</a>&nbsp;&nbsp;rumble Motor Off</h4>
+<br>
+*(volatile unsigned long*)0xCC006400 = 0x00400000;
+*(volatile unsigned long*)0xCC006438 = 0x80000000;
+     <div class="idx"><a href="http://hitmen.c02.at/files/yagcd/yagcd/index.html#idx9.3">index</a></div>
+<h3>
+<a name="sec9.3">
+9.3</a>&nbsp;&nbsp;Keyboard</h3>
+<br><div class="idx"><a href="http://hitmen.c02.at/files/yagcd/yagcd/index.html#idx9.3.1">index</a></div>
+<h4>
+<a name="sec9.3.1">
+9.3.1</a>&nbsp;&nbsp;Types</h4>
+<br><h5>9.3.1.1 <a name="sec9.3.1.1">
+    &nbsp;&nbsp;ASCII</a>
+</h5>
+<br>
+Official Nintendo/SEGA keyboard for the GameCube. It has 80 keys plus
+an Fn key, some of the keys have Japanese labelings. It has an LShift
+and an RShift key, but only a single Ctrl and Alt key. The Fn key
+is internal to the keyboard. It makes the keyboard send different
+scancodes if it is pressed, and an Fn keypress alone cannot be detected.
+<h5>9.3.1.2 <a name="sec9.3.1.2">
+    &nbsp;&nbsp;Datel</a>
+</h5>
+<br>
+A British IBM PS/2 keyboard that ships with an adapter.
+<h5>9.3.1.3 <a name="sec9.3.1.3">
+    &nbsp;&nbsp;Tototek Adapter</a>
+</h5>
+<br>
+Converts the IBM PS/2 protocol to the GameCube SI protocol and also
+converts the PS/2 scancodes into GameCube scancodes. The keys that
+have Japanese labelings on the ASCII keyboard get mapped to keys like
+PrintScreen and Pause. 
+<ul>
+<li> 0-9 and Enter send the scancodes of their counterparts on the alphanumeric
+part of the keyboard, regardless of the status of NumLock, so the
+Numpad cannot be used as cursor keys.
+</li>
+<li> The key right of LShift on non-US keyboards sends no scancode.
+</li>
+<li> The Pause/SysReq key only sends the keycode of 0x37 once, even if
+it's pressed down continuously.
+</li>
+<li> Numpad-* sends 0x37, the same as Pause/SysReq, but this one continues
+sending it.
+</li>
+<li> All combinations of Pause/SysReq with other keys are possible, except
+for these: LStrg or LStrg together with Pause/SysReq doesn't send
+anything. This would have been SysReq.
+</li>
+<li> The adapter easily gets confused by two keys for which it produces
+the same GameCube scancodes: If you hold down LStrg and press RStrg,
+the LStrg scancode will disappear even though LStrg is srill pressed
+down. The same is true for Ctrl and Alt.
+</li>
+</ul>
+<div class="idx"><a href="http://hitmen.c02.at/files/yagcd/yagcd/index.html#idx9.3.2">index</a></div>
+<h4>
+<a name="sec9.3.2">
+9.3.2</a>&nbsp;&nbsp;Scancodes</h4>
+<br><table><tbody><tr><td align="center" nowrap="nowrap">
+<table>
+<tbody><tr>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap"><tt><b>.0</b></tt></td>
+<td align="center" nowrap="nowrap"><tt><b>.1</b></tt></td>
+<td align="center" nowrap="nowrap"><tt><b>.2</b></tt></td>
+<td align="center" nowrap="nowrap"><tt><b>.3</b></tt></td>
+<td align="center" nowrap="nowrap"><tt><b>.4</b></tt></td>
+<td align="center" nowrap="nowrap"><tt><b>.5</b></tt></td>
+<td align="center" nowrap="nowrap"><tt><b>.6</b></tt></td>
+<td align="center" nowrap="nowrap"><tt><b>.7</b></tt></td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap"><tt>0.</tt></td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">Home</td>
+<td align="center" nowrap="nowrap">End</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap"><tt>1.</tt></td>
+<td align="center" nowrap="nowrap">A</td>
+<td align="center" nowrap="nowrap">B</td>
+<td align="center" nowrap="nowrap">C</td>
+<td align="center" nowrap="nowrap">D</td>
+<td align="center" nowrap="nowrap">E</td>
+<td align="center" nowrap="nowrap">F</td>
+<td align="center" nowrap="nowrap">G</td>
+<td align="center" nowrap="nowrap">H</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap"><tt>2.</tt></td>
+<td align="center" nowrap="nowrap">Q</td>
+<td align="center" nowrap="nowrap">R</td>
+<td align="center" nowrap="nowrap">S</td>
+<td align="center" nowrap="nowrap">T</td>
+<td align="center" nowrap="nowrap">U</td>
+<td align="center" nowrap="nowrap">V</td>
+<td align="center" nowrap="nowrap">W</td>
+<td align="center" nowrap="nowrap">X</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap"><tt>3.</tt></td>
+<td align="center" nowrap="nowrap">7</td>
+<td align="center" nowrap="nowrap">8</td>
+<td align="center" nowrap="nowrap">9</td>
+<td align="center" nowrap="nowrap">0</td>
+<td align="center" nowrap="nowrap">-_ ()</td>
+<td align="center" nowrap="nowrap">=+</td>
+<td align="center" nowrap="nowrap">PrntScrn </td>
+<td align="center" nowrap="nowrap">Pause/SysReq </td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">NP 7</td>
+<td align="center" nowrap="nowrap">NP 8</td>
+<td align="center" nowrap="nowrap">NP 9</td>
+<td align="center" nowrap="nowrap">NP 0</td>
+<td align="center" nowrap="nowrap">NP -</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">NP /</td>
+<td align="center" nowrap="nowrap">NP *</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap"><tt>4.</tt></td>
+<td align="center" nowrap="nowrap">F1</td>
+<td align="center" nowrap="nowrap">F2</td>
+<td align="center" nowrap="nowrap">F3</td>
+<td align="center" nowrap="nowrap">F4</td>
+<td align="center" nowrap="nowrap">F5</td>
+<td align="center" nowrap="nowrap">F6</td>
+<td align="center" nowrap="nowrap">F7</td>
+<td align="center" nowrap="nowrap">F8</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap"><tt>5.</tt></td>
+<td align="center" nowrap="nowrap">Backspace</td>
+<td align="center" nowrap="nowrap">Tab</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">CapsLock</td>
+<td align="center" nowrap="nowrap">LShift (*54)</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">LCtrl (*56)</td>
+<td align="center" nowrap="nowrap">LAlt (*57)</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap"><tt>6.</tt></td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">Enter</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">NP Enter</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap"><tt><b>.8</b></tt></td>
+<td align="center" nowrap="nowrap"><tt><b>.9</b></tt></td>
+<td align="center" nowrap="nowrap"><tt><b>.A</b></tt></td>
+<td align="center" nowrap="nowrap"><tt><b>.B</b></tt></td>
+<td align="center" nowrap="nowrap"><tt><b>.C</b></tt></td>
+<td align="center" nowrap="nowrap"><tt><b>.D</b></tt></td>
+<td align="center" nowrap="nowrap"><tt><b>.E</b></tt></td>
+<td align="center" nowrap="nowrap"><tt><b>.F</b></tt></td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap"><tt>0.</tt></td>
+<td align="center" nowrap="nowrap">PgUp</td>
+<td align="center" nowrap="nowrap">PgDn</td>
+<td align="center" nowrap="nowrap">ScrollLock</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap"><tt>1.</tt></td>
+<td align="center" nowrap="nowrap">I</td>
+<td align="center" nowrap="nowrap">J</td>
+<td align="center" nowrap="nowrap">K</td>
+<td align="center" nowrap="nowrap">L</td>
+<td align="center" nowrap="nowrap">M</td>
+<td align="center" nowrap="nowrap">N</td>
+<td align="center" nowrap="nowrap">O</td>
+<td align="center" nowrap="nowrap">P</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap"><tt>2.</tt></td>
+<td align="center" nowrap="nowrap">Y</td>
+<td align="center" nowrap="nowrap">Z</td>
+<td align="center" nowrap="nowrap">1</td>
+<td align="center" nowrap="nowrap">2</td>
+<td align="center" nowrap="nowrap">3</td>
+<td align="center" nowrap="nowrap">4</td>
+<td align="center" nowrap="nowrap">5</td>
+<td align="center" nowrap="nowrap">6</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">NP 1</td>
+<td align="center" nowrap="nowrap">NP 2</td>
+<td align="center" nowrap="nowrap">NP 3</td>
+<td align="center" nowrap="nowrap">NP 4</td>
+<td align="center" nowrap="nowrap">NP 5</td>
+<td align="center" nowrap="nowrap">NP 6</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap"><tt>3.</tt></td>
+<td align="center" nowrap="nowrap">[{</td>
+<td align="center" nowrap="nowrap">;: </td>
+<td align="center" nowrap="nowrap">"</td>
+<td align="center" nowrap="nowrap">]}</td>
+<td align="center" nowrap="nowrap">,&lt;</td>
+<td align="center" nowrap="nowrap">.&gt; </td>
+<td align="center" nowrap="nowrap">/?</td>
+<td align="center" nowrap="nowrap"> - </td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">NP + (*39)</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">NP .</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap"><tt>4.</tt></td>
+<td align="center" nowrap="nowrap">F9</td>
+<td align="center" nowrap="nowrap">F10</td>
+<td align="center" nowrap="nowrap">F11</td>
+<td align="center" nowrap="nowrap">F!2</td>
+<td align="center" nowrap="nowrap">ESC</td>
+<td align="center" nowrap="nowrap">Ins</td>
+<td align="center" nowrap="nowrap">Del</td>
+<td align="center" nowrap="nowrap">`~</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap"><tt>5.</tt></td>
+<td align="center" nowrap="nowrap">LWin</td>
+<td align="center" nowrap="nowrap">space</td>
+<td align="center" nowrap="nowrap">RWin</td>
+<td align="center" nowrap="nowrap">Menu</td>
+<td align="center" nowrap="nowrap">Left</td>
+<td align="center" nowrap="nowrap">Down</td>
+<td align="center" nowrap="nowrap">Up</td>
+<td align="center" nowrap="nowrap">Right</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap"><tt>6.</tt></td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">NumLock (*6a)</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+</tr>
+</tbody></table>
+</td></tr></tbody></table>
+<br><br>
+(*39) Tototek adapter: makes only sence for japenese ASCII labeling<br>
+(*54) Tototek adapter sends this code for LShift and RShift<br>
+(*56) Tototek adapter sends this code for LCtrl and RCtrl<br>
+(*57) Tototek adapter sends this code for LAlt and RAlt<br>
+(*6a) Tototek adapter: undefined for GameCube
+      <div class="idx"><a href="http://hitmen.c02.at/files/yagcd/yagcd/index.html#idx9.3.3">index</a></div>
+<h4>
+<a name="sec9.3.3">
+9.3.3</a>&nbsp;&nbsp;Init</h4>
+<br><ul>
+<li> enable controller in 0xcc006430
+</li>
+<li> set Joy-channel Command Register to 0x00540000
+</li>
+<li> clear SI i/o buffer
+</li>
+<li> wait until bit 31 of 0xCC006434 is 0, then set it to 1
+</li>
+</ul>
+Command Word
+0x00540000 - enable polling
+      <div class="idx"><a href="http://hitmen.c02.at/files/yagcd/yagcd/index.html#idx9.3.4">index</a></div>
+<h4>
+<a name="sec9.3.4">
+9.3.4</a>&nbsp;&nbsp;Read Keyboard</h4>
+<br><table>
+<tbody><tr><td nowrap="nowrap"><b>first input word</b></td></tr>
+<tr><td nowrap="nowrap">
+<table>
+<tbody><tr>
+<td align="center" nowrap="nowrap"><b>bit(s)</b></td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap"><b>Description</b></td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">31</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">ERRSTAT - (assumed 0)</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">30</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">ERRLATCH - (assumed 0)</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">24-29</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">?</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">16-23</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">?</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">8-15</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">?</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">0-7</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">?</td>
+</tr>
+</tbody></table>
+</td></tr>
+</tbody></table>
+<br><br><table>
+<tbody><tr><td nowrap="nowrap"><b>second input word</b></td></tr>
+<tr><td nowrap="nowrap">
+<table>
+<tbody><tr>
+<td align="center" nowrap="nowrap"><b>bit(s)</b></td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap"><b>Description</b></td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">24-31</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">key1</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">16-23</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">key2</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">8-15</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">key3</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">0-7</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">?</td>
+</tr>
+</tbody></table>
+</td></tr>
+</tbody></table>
+<br><div class="idx"><a href="http://hitmen.c02.at/files/yagcd/yagcd/index.html#idx9.4">index</a></div>
+<h3>
+<a name="sec9.4">
+9.4</a>&nbsp;&nbsp;GBA</h3>
+<br>
+to do
+     <div class="idx"><a href="http://hitmen.c02.at/files/yagcd/yagcd/index.html#idx9.5">index</a></div>
+<h3>
+<a name="sec9.5">
+9.5</a>&nbsp;&nbsp;Wavebird</h3>
+<br>
+to do
+     <div class="idx"><a href="http://hitmen.c02.at/files/yagcd/yagcd/index.html#idx9.6">index</a></div>
+<h3>
+<a name="sec9.6">
+9.6</a>&nbsp;&nbsp;steering wheel</h3>
+<br>
+to do
+     <div class="idx"><a href="http://hitmen.c02.at/files/yagcd/yagcd/index.html#idx9.7">index</a></div>
+<h3>
+<a name="sec9.7">
+9.7</a>&nbsp;&nbsp;DKongas</h3>
+<br>
+These work exactly like the standard controllers from the programmers
+point of view, and they even have the same ID.
+      <div class="idx"><a href="http://hitmen.c02.at/files/yagcd/yagcd/index.html#idx9.7.1">index</a></div>
+<h4>
+<a name="sec9.7.1">
+9.7.1</a>&nbsp;&nbsp;Read Controller Status</h4>
+<br><ul>
+<li> simply read all Joy-channel registers and extract the info you want
+</li>
+</ul>
+<table>
+<tbody><tr><td nowrap="nowrap"><b>first input word</b></td></tr>
+<tr><td nowrap="nowrap">
+<table>
+<tbody><tr>
+<td align="center" nowrap="nowrap"><b>bit(s)</b></td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap"><b>Description</b></td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">31</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">ERRSTAT - (assumed 0)</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">30</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">ERRLATCH - (assumed 0)</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">29</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">unused (?)</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">28</td>
+<td align="center" nowrap="nowrap">s</td>
+<td nowrap="nowrap">Start Button</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">27</td>
+<td align="center" nowrap="nowrap">y</td>
+<td nowrap="nowrap">left Konga, top/left (Y Button)</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">26</td>
+<td align="center" nowrap="nowrap">x</td>
+<td nowrap="nowrap">right Konga, top/left (X Button)</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">25</td>
+<td align="center" nowrap="nowrap">b</td>
+<td nowrap="nowrap">left Konga, bottom/right (B Button)</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">24</td>
+<td align="center" nowrap="nowrap">a</td>
+<td nowrap="nowrap">right Konga, bottom/right (A Button)</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">23</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">unused (?)</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">22</td>
+<td align="center" nowrap="nowrap">L</td>
+<td nowrap="nowrap">unused (L Trigger)</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">21</td>
+<td align="center" nowrap="nowrap">R</td>
+<td nowrap="nowrap">unused ? (R Trigger) </td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">20</td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">unused (Z Trigger)</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">19</td>
+<td align="center" nowrap="nowrap">u</td>
+<td nowrap="nowrap">unused (D-Pad Up)</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">18</td>
+<td align="center" nowrap="nowrap">d</td>
+<td nowrap="nowrap">unused (D-Pad Down)</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">17</td>
+<td align="center" nowrap="nowrap">r</td>
+<td nowrap="nowrap">unused (D-Pad Right)</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">16</td>
+<td align="center" nowrap="nowrap">l</td>
+<td nowrap="nowrap">unused (D-Pad Left)</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">8-15</td>
+<td align="center" nowrap="nowrap">x</td>
+<td nowrap="nowrap">unused (Analog Stick X)</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">0-7</td>
+<td align="center" nowrap="nowrap">y</td>
+<td nowrap="nowrap">unused (Analog Stick Y)</td>
+</tr>
+</tbody></table>
+</td></tr>
+</tbody></table>
+<br><br><table>
+<tbody><tr><td nowrap="nowrap"><b>second input word</b></td></tr>
+<tr><td nowrap="nowrap">
+<table>
+<tbody><tr>
+<td align="center" nowrap="nowrap"><b>bit(s)</b></td>
+<td align="center" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap"><b>Description</b></td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">24-31</td>
+<td align="center" nowrap="nowrap">x</td>
+<td nowrap="nowrap">unused (Analog C Stick X)</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">16-23</td>
+<td align="center" nowrap="nowrap">y</td>
+<td nowrap="nowrap">unused (Analog C Stick Y)</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">8-15</td>
+<td align="center" nowrap="nowrap">l</td>
+<td nowrap="nowrap">unused (L Trigger Analog)</td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap">0-7</td>
+<td align="center" nowrap="nowrap">r</td>
+<td nowrap="nowrap">Microphone (R Trigger Analog) (8bit unsigned, ~16...?)</td>
+</tr>
+</tbody></table>
+</td></tr>
+</tbody></table>
+<br><div class="idx"><a href="http://hitmen.c02.at/files/yagcd/yagcd/index.html#idx9.8">index</a></div>
+<h3>
+<a name="sec9.8">
+9.8</a>&nbsp;&nbsp;Resident Evil4 Chainsaw</h3>
+<br>
+to do
+ <div class="idx"><a href="http://hitmen.c02.at/files/yagcd/yagcd/index.html#idx10">index</a></div>
+
+</body></html>

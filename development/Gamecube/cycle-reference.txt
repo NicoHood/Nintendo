@@ -1,0 +1,24 @@
+op	cycles
+--------------
+ld 	2
+ldi	1
+sbi	2
+mov	1
+movw 1
+lsl	1
+rol	1
+sbc	1
+or	1
+brne	1/2
+rjmp	2
+cbi	2
+breq	1/2
+subi	1
+st	2
+sbic	1/2/3
+sub	1
+adiw	2
+lds	2
+andi	1
+com	1
+and	1
