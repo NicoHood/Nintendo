@@ -57,10 +57,11 @@ Gamecube tested about 60minutes with 2 reading errors (of some million). Should 
 
 How to get assembler output:
 ```
- http://rcarduino.blogspot.de/2012/09/how-to-view-arduino-assembly.html
- http://www.atmel.com/Images/doc0856.pdf
  E:\Arduino\arduino-1.5.6-r2\hardware\tools\avr\bin\avr-objdump -S C:\Users\Testuser\AppData\Local\Temp\build8182289464639461553.tmp\GamecubeController13.cpp.elf > E:\RCChannels.dmp
 ```
+http://rcarduino.blogspot.de/2012/09/how-to-view-arduino-assembly.html
+
+http://www.atmel.com/Images/doc0856.pdf
 
 This library wouldnt be possible without
 ========================================
