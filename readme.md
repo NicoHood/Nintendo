@@ -44,7 +44,7 @@ See folder development for more information/links below
  ```
  
  ![Schematic](development/Gamecube/Gamecube_Connection.png)
- ![cable](extensioncable.jpg)
+ ![cable](development/Gamecube/extensioncable.jpg)
 
 How does it work
 ================
