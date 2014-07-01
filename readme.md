@@ -71,6 +71,9 @@ This library wouldnt be possible without
 * [Nintendo Gamecube Controller Pinout](http://www.int03.co.uk/crema/hardware/gamecube/gc-control.htm)
 * [HID Project](https://github.com/NicoHood/HID)
 
+Contact me via my blog:
+http://nicohood.wordpress.com/
+
 Known Bugs
 ==========
 **This might not work with newer IDE versions or different compilers (for Gamecube/N64).**
