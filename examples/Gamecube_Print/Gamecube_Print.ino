@@ -4,6 +4,7 @@
  
  Gamecube_Print example
  Press a button to print Gamcube controller status/report to the Serial
+ It will turn on/off rumble every read.
  */
 
 #include <Nintendo.h>
@@ -49,9 +50,12 @@ void loop(){
   Serial.println("Press the button to get controller report");
   while(digitalRead(pinButton));
   delay(300); // simple debounce
-
-  if(Gamecube.read())
+  static bool rumble = false;
+  // you can fully remove the rumble to just read the values without
+  if(Gamecube.read(rumble)){
     print_gc_status();
+	rumble^=1; // switch rumble
+	}
   else
     Serial.println("Couldnt connect to the controller");
 }
