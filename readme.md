@@ -68,6 +68,7 @@ This library wouldnt be possible without
 * [Salae Logic](https://www.saleae.com/logic)
 * [Yet Another Gamecube Documentation](http://hitmen.c02.at/files/yagcd/yagcd/chap9.html)
 * [Nintendo Gamecube Controller Pinout](http://www.int03.co.uk/crema/hardware/gamecube/gc-control.htm)
+* [HID Project](https://github.com/NicoHood/HID)
 
 Known Bugs
 ==========
