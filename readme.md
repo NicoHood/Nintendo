@@ -15,7 +15,7 @@ on your PC for example. This requires a 16MHZ Arduino.
 * Gamecube_Print prints GC controller status to your Serial
 * Gamecube_USB_HID makes your GC controller usable on pc. Requires [HID Project](https://github.com/NicoHood/HID).
 
-These features are planned (Wii stuff with USB Host shield or I2C):
+**These features are planned (Wii stuff with USB Host shield or I2C):**
 * Wii-Mote
 * Wii Nunchuk
 * Wii Classic Controller
@@ -31,7 +31,7 @@ The Gamecube controller uses 3.3V Logic, 3.3V Power and 5V rumble Power.
 A 1k resistor on the 3.3V side is recommended to pullup the line. See schematic.
 
 You better get an extension cable and cut it half. I used a lioncast cable and the colors were:
-Colors of my extension cable, can be different to yours!
+**Colors of my extension cable, can be different to yours!**
 See folder development for more information/links below
 ```
 1 Yellow: 5V
