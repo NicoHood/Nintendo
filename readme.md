@@ -27,7 +27,9 @@ Gamecube Controller Setup
 =========================
 
 The Gamecube controller uses 3.3V Logic, 3.3V Power and 5V rumble Power.
-**Make sure to use a logic level converter to not burn your controller.**
+
+####Make sure to use a logic level converter to not burn your controller.
+
 A 1k resistor on the 3.3V side is recommended to pullup the line. See schematic.
 
 You better get an extension cable and cut it half. I used a lioncast cable and the colors were:
