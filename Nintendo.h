@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2014 NicoHood
+Copyright (c) 2014-2015 NicoHood
 See the readme for credit to other people.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,10 +21,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-/**
-* Gamecube controller to Nintendo 64 adapter
-* by Andrew Brown
-*/
 
 #ifndef NINTENDO_H
 #define NINTENDO_H
@@ -35,31 +31,24 @@ THE SOFTWARE.
 // Settings
 //================================================================================
 
-// Do you use a Logic Level converter? (if not use a 1k 3.3V pullup)
-// ***not supported, use level converter!!!***
-#define LOGIC_LEVEL_CONVERTER
-
+// no settings available
 
 //================================================================================
 // Definitions
 //================================================================================
 
-// these two macros set arduino pin 2 to input or output, which with an
-// external 1K pull-up resistor to the 3.3V rail, is like pulling it high or
-// low.
-#ifndef LOGIC_LEVEL_CONVERTER
-// ***not supported, use level converter!!!***
-#endif
+// gamecube controller device status ids
+#define NINTENDO_DEVICE_GC_WIRED 0x0900
 
 //================================================================================
-// Report Typedefinitions
+// Gamecube
 //================================================================================
 
 typedef union{
 	// 8 bytes of datareport that we get from the controller
-	uint8_t whole8[8];
-	uint16_t whole16[8 / 2];
-	uint32_t whole32[8 / 4];
+	uint8_t whole8[];
+	uint16_t whole16[];
+	uint32_t whole32[];
 
 	struct{
 		uint8_t buttons1;
@@ -73,9 +62,9 @@ typedef union{
 		uint8_t x : 1;
 		uint8_t y : 1;
 		uint8_t start : 1;
-		uint8_t LOW3 : 1;
-		uint8_t LOW2 : 1;
+		uint8_t LOW0 : 1;
 		uint8_t LOW1 : 1;
+		uint8_t LOW2 : 1;
 
 		// second data byte
 		uint8_t dleft : 1;
@@ -85,7 +74,7 @@ typedef union{
 		uint8_t z : 1;
 		uint8_t r : 1;
 		uint8_t l : 1;
-		uint8_t HIGH1 : 1;
+		uint8_t HIGH0 : 1;
 
 		// 3rd-8th data byte
 		uint8_t xAxis;
@@ -99,67 +88,52 @@ typedef union{
 
 typedef union{
 	// 3 bytes of statusreport that we get from the controller
-	uint8_t whole8[3];
-	uint16_t whole16[3 / 2];
+	uint8_t whole8[];
+	uint16_t whole16[];
 	struct {
 		// Device information
 		uint16_t device;
 
 		// Controller status (only rumble is known)
-		uint8_t status1 : 3;
+		uint8_t status0 : 3;
 		uint8_t rumble : 1;
-		uint8_t status2 : 4;
+		uint8_t status1 : 4;
 	};
 } Gamecube_Status_t;
-
-//================================================================================
-// Gamecube Class
-//================================================================================
 
 class Gamecube_{
 public:
 	Gamecube_(void);
-	bool begin(uint8_t pin);
-	bool init(void);
-	void end(void);
 
-	// user read/write functions
-	bool read(bool rumble = 0); // default no rumble
-	void write(void);
-
-	// writes the dump in a passed in array(in this case the report structs)
-	void translate_raw_data(uint8_t raw_dumb[], void* data, uint8_t length);
-
-	// writes variables to the intern report
-	inline void xAxis(uint8_t a){ report.xAxis = a; }
-	inline void yAxis(uint8_t a){ report.yAxis = a; }
-	inline void cxAxis(uint8_t a){ report.cxAxis = a; }
-	inline void cyAxis(uint8_t a){ report.cyAxis = a; }
-
-	// functions to communicate with the controller
-	// public for debug access
-	bool sendget(uint8_t *buffer, uint8_t sendlength, uint8_t getlength,
-		volatile uint8_t* modePort, volatile uint8_t* outPort, volatile uint8_t * inPort, uint8_t bitMask);
-
-	void send(uint8_t *buffer, uint8_t length,
-		volatile uint8_t* modePort, volatile uint8_t* outPort, uint8_t bitMask);
-
-	bool get(uint8_t *buffer, uint8_t length,
-		volatile uint8_t* modePort, volatile uint8_t* outPort, volatile uint8_t * inPort, uint8_t bitMask);
-
-
-	// Structs that stores the controller states
-	Gamecube_Status_t status;
-	Gamecube_Data_t report;
-
-private:
-	uint8_t _bitMask;
-	volatile uint8_t * _outPort;
-	volatile uint8_t * _inPort;
-	volatile uint8_t * _modePort;
-
+	bool begin(const uint8_t pin, Gamecube_Status_t &status);
+	bool end(const uint8_t pin);
+	bool read(const uint8_t pin, Gamecube_Data_t &report, const bool rumble = 0); // default no rumble
+	inline void write(void){} // TODO
 };
 
 extern Gamecube_ Gamecube;
 
-#endif
+//================================================================================
+// Function prototypes
+//================================================================================
+
+// functions to communicate with the gc/n64 controller
+void gc_send(uint8_t* buff, uint8_t len,
+	volatile uint8_t* modePort, volatile uint8_t* outPort, uint8_t bitMask);
+
+uint8_t gc_get(uint8_t* buff, uint8_t len,
+	volatile uint8_t* modePort, volatile uint8_t* outPort, volatile uint8_t * inPort, uint8_t bitMask);
+
+inline void n64_send(uint8_t *buff, uint8_t len,
+	volatile uint8_t* modePort, volatile uint8_t* outPort, uint8_t bitMask)
+{
+	gc_send(buff, len, modePort, outPort, bitMask);
+}
+
+inline uint8_t n64_get(uint8_t *buff, uint8_t len,
+	volatile uint8_t* modePort, volatile uint8_t* outPort, volatile uint8_t * inPort, uint8_t bitMask)
+{
+	gc_get(buff, len, modePort, outPort, inPort, bitMask);
+}
+
+#endif // include guard

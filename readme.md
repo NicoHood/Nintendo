@@ -1,5 +1,5 @@
-Arduino Nintendo Library
-========================
+Arduino Nintendo Library 1.1
+============================
 
 This library is made to connect Nintendo Controllers to your Arduino very easy.
 Make sure you grab the right hardware, tear off some cables and use your controllers
@@ -30,9 +30,8 @@ The Gamecube controller uses 3.3V Logic, 3.3V Power and 5V rumble Power.
 **Make sure to use a logic level converter to not burn your controller.**
 A 1k resistor on the 3.3V side is recommended to pullup the line. See schematic.
 
-You better get an extension cable and cut it half. I used a lioncast cable and the colors were:
-**Colors of my extension cable, can be different to yours!**
-See folder development for more information/links below
+You better get an extension cable and cut it half. I used a lioncast cable and the colors were
+**(can be different to yours!)**:
 ```
 1 Yellow: 5V
 2 White:  Data
@@ -44,6 +43,9 @@ See folder development for more information/links below
  ```
  
  ![Schematic](development/Gamecube/Gamecube_Connection.png)
+ 
+ Cut the extension cable and solder some wires. Make sure they don't connect with each other like in the picture.
+ 
  ![cable](development/Gamecube/extensioncable.jpg)
 
 How does it work
@@ -51,7 +53,7 @@ How does it work
 Gamecube:
 ---------
 Here is just refer to the other documentations, its explained pretty good.
-What i did was to mess around with this some more and integrated easy user access.
+What I did was to mess around with this some more and integrated easy user access.
 This wouldnt be possible without the work of other people (below) and a logic analyzer.
 Gamecube tested about 60minutes with 2 reading errors (of some million). Should work stable.
 
@@ -72,13 +74,10 @@ This library wouldnt be possible without
 * [HID Project](https://github.com/NicoHood/HID)
 
 Contact me via my blog:
-http://nicohood.wordpress.com/
+http://nicohood.de/
 
 Known Bugs
 ==========
-**This might not work with newer IDE versions or different compilers (for Gamecube/N64).**
-This is because of the very critical timing and the inline assembler with nops.
-Arduino IDE 1.0.5 and 1.5.6-r2 do work!
 
 Ports next to the input can crosstalk maybe. This should be 0.2uS or so, not really important.
 But this is a general hardware bug of the AVR uCs. Just want to note that.
@@ -86,6 +85,16 @@ But this is a general hardware bug of the AVR uCs. Just want to note that.
 Version History
 ===============
 ```
+1.1 Release (02.xx.2015)
+* Changes in the Gamecube Code:
+ * Hardcoded all get/send functions with assembler
+ * Now with all IDE versions compatible
+ * Improved pin management/ram usage
+ * Multiple controllers possible
+ * Improved end() functions
+ * Improved example
+ * Updated HID Project example to version 2.1
+
 1.0 Release (01.07.2014)
 * Added Gamecube Device support
 ```
@@ -95,7 +104,7 @@ Licence and Copyright
 If you use this library for any cool project let me know!
 
 ```
-Copyright (c) 2014 NicoHood
+Copyright (c) 2014-2015 NicoHood
 See the readme for credit to other people.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
