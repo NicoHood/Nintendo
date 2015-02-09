@@ -5,6 +5,8 @@ This library is made to connect Nintendo Controllers to your Arduino very easy.
 Make sure you grab the right hardware, tear off some cables and use your controllers
 on your PC for example. This requires a 16MHZ Arduino.
 
+**IDE 1.6 compatible!**
+
 **The library supports the following devices:**
 * Gamecube Controller
 * Gamecube Host(todo)
@@ -23,12 +25,18 @@ on your PC for example. This requires a 16MHZ Arduino.
 * Wiiu Pro Controller
 * SNES Controller (I dont have any right now)
 
-Gamecube Controller Setup
-=========================
+Gamecube Controller
+===================
+
+### Hardware setup
 
 The Gamecube controller uses 3.3V Logic, 3.3V Power and 5V rumble Power.
 **Make sure to use a logic level converter to not burn your controller.**
 A 1k resistor on the 3.3V side is recommended to pullup the line. See schematic.
+
+The rumble draws about 30mA from what I've measured.
+Using the In/Output method will cause weird delay in the sending and the pulse is 2cycles off sometimes.
+Currently the library only works for 16MHz, but 20MHz could be possible and 8MHz with some tricks.
 
 You better get an extension cable and cut it half. I used a lioncast cable and the colors were
 **(can be different to yours!)**:
@@ -42,11 +50,98 @@ You better get an extension cable and cut it half. I used a lioncast cable and t
 7 Black:  Gnd
  ```
  
- ![Schematic](development/Gamecube/Gamecube_Connection.png)
+ ![Breadboard](Gamecube/Gamecube_bb.png)
  
  Cut the extension cable and solder some wires. Make sure they don't connect with each other like in the picture.
  
  ![cable](development/Gamecube/extensioncable.jpg)
+
+### Software
+
+Checkout the examples on how to access and initialize the controller.
+
+#####bool begin(const uint8_t pin, Gamecube_Status_t &status)
+Initializes the controller and updates the passed in status report.
+The status report tells you the controller type and the rumble state.
+Normally you don't have to do this, but for a Wavebird Controller it seems to be necessary.
+Returns true if initialization was successful, otherwise false.
+
+#####bool end(const uint8_t pin)
+Sends a rumble off signal to the controller and discards any incoming data.
+Mainly does the same as read, but discards the data.
+Returns true if operation was successful, otherwise false.
+
+#####bool read(const uint8_t pin, Gamecube_Data_t &report, const bool rumble = false)
+Reads in the new controller state to the passed in report.
+Rumble will be turned on/off by the passed in bool.
+If you don't pass the rumble boot it, it will by default not rumble.
+Returns true if reading was successful, otherwise false.
+If it fails, it still might have updated some bytes of the report.
+
+#####Gamecube_Data_t
+```cpp
+typedef union{
+	// 8 bytes of datareport that we get from the controller
+	uint8_t whole8[];
+	uint16_t whole16[];
+	uint32_t whole32[];
+
+	struct{
+		uint8_t buttons1;
+		uint8_t buttons2;
+	};
+
+	struct {
+		// first data byte (bitfields are sorted in LSB order)
+		uint8_t a : 1;
+		uint8_t b : 1;
+		uint8_t x : 1;
+		uint8_t y : 1;
+		uint8_t start : 1;
+		uint8_t low0 : 1;
+		uint8_t low1 : 1;
+		uint8_t low2 : 1;
+
+		// second data byte
+		uint8_t dleft : 1;
+		uint8_t dright : 1;
+		uint8_t ddown : 1;
+		uint8_t dup : 1;
+		uint8_t z : 1;
+		uint8_t r : 1;
+		uint8_t l : 1;
+		uint8_t high0 : 1;
+
+		// 3rd-8th data byte
+		uint8_t xAxis;
+		uint8_t yAxis;
+		uint8_t cxAxis;
+		uint8_t cyAxis;
+		uint8_t left;
+		uint8_t right;
+	};
+} Gamecube_Data_t;
+```
+
+#####Gamecube_Status_t
+```cpp
+typedef union{
+	// 3 bytes of statusreport that we get from the controller
+	uint8_t whole8[];
+	uint16_t whole16[];
+	struct {
+		// device information
+		uint16_t device;
+
+		// controller status (only rumble is known)
+		uint8_t status0 : 3;
+		uint8_t rumble : 1;
+		uint8_t status1 : 4;
+	};
+} Gamecube_Status_t;
+```
+
+###Protocol information
 
 How does it work
 ================
