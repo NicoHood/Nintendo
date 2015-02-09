@@ -75,7 +75,7 @@ void loop() {
     Serial.println("Trying to initialize again.");
     if (initGamecubeController(pinGamecubeController1, GamecubeStatus)) {
       // initialization successful, try to read again, dont use rumble right now
-      if (Gamecube.read(pinGamecubeController1, GamecubeData, false))
+      if (Gamecube.read(pinGamecubeController1, GamecubeData))
         print_gc_status(GamecubeData);
       else
         Serial.println("Could still not connect to the controller.");
