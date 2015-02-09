@@ -59,6 +59,9 @@ You better get an extension cable and cut it half. I used a lioncast cable and t
 ### Software
 
 Checkout the examples on how to access and initialize the controller.
+Be aware that every reading turns off interrupts. A bit logic is 4uS long.
+4 uS * 8 * (1 + 3) = 128 microseconds to read the status.
+4 uS * 8 * (3 + 8) = 352 microseconds to read the data.
 
 #####bool begin(const uint8_t pin, Gamecube_Status_t &status)
 Initializes the controller and updates the passed in status report.
