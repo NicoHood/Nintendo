@@ -31,7 +31,8 @@ THE SOFTWARE.
 // Settings
 //================================================================================
 
-// no settings available
+// timeout for the reading function for the pin to go low/high
+#define NINTENDO_GAMECUBE_N64_TIMEOUT NINTENDO_GAMECUBE_N64_TIMEOUT_US(28)
 
 //================================================================================
 // Definitions
@@ -39,6 +40,13 @@ THE SOFTWARE.
 
 // gamecube controller device status ids
 #define NINTENDO_DEVICE_GC_WIRED 0x0900
+
+#if (F_CPU != 16000000)
+#error This library only supports 16MHz AVRs
+#endif
+
+// timeout for the reading function for the pin to go low/high
+#define NINTENDO_GAMECUBE_N64_TIMEOUT_US(uS) (uS * F_CPU / (1000000 * 7))
 
 //================================================================================
 // Gamecube
@@ -56,15 +64,15 @@ typedef union{
 	};
 
 	struct {
-		// first data byte (Bitfields are sorted in LSB order)
+		// first data byte (bitfields are sorted in LSB order)
 		uint8_t a : 1;
 		uint8_t b : 1;
 		uint8_t x : 1;
 		uint8_t y : 1;
 		uint8_t start : 1;
-		uint8_t LOW0 : 1;
-		uint8_t LOW1 : 1;
-		uint8_t LOW2 : 1;
+		uint8_t low0 : 1;
+		uint8_t low1 : 1;
+		uint8_t low2 : 1;
 
 		// second data byte
 		uint8_t dleft : 1;
@@ -74,7 +82,7 @@ typedef union{
 		uint8_t z : 1;
 		uint8_t r : 1;
 		uint8_t l : 1;
-		uint8_t HIGH0 : 1;
+		uint8_t high0 : 1;
 
 		// 3rd-8th data byte
 		uint8_t xAxis;
@@ -91,10 +99,10 @@ typedef union{
 	uint8_t whole8[];
 	uint16_t whole16[];
 	struct {
-		// Device information
+		// device information
 		uint16_t device;
 
-		// Controller status (only rumble is known)
+		// controller status (only rumble is known)
 		uint8_t status0 : 3;
 		uint8_t rumble : 1;
 		uint8_t status1 : 4;
@@ -107,7 +115,7 @@ public:
 
 	bool begin(const uint8_t pin, Gamecube_Status_t &status);
 	bool end(const uint8_t pin);
-	bool read(const uint8_t pin, Gamecube_Data_t &report, const bool rumble = 0); // default no rumble
+	bool read(const uint8_t pin, Gamecube_Data_t &report, const bool rumble = false); // default no rumble
 	inline void write(void){} // TODO
 };
 

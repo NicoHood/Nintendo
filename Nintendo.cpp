@@ -50,16 +50,17 @@ bool Gamecube_::begin(const uint8_t pin, Gamecube_Status_t &status)
 	uint8_t command[] = { 0x00 };
 
 	// don't want interrupts getting in the way
-	noInterrupts();
+	uint8_t oldSREG = SREG;
+	cli();
 
 	// send the command
-	gc_send((uint8_t*)&command, sizeof(command), modePort, outPort, bitMask);
+	gc_send(command, sizeof(command), modePort, outPort, bitMask);
 
 	// read in data
 	uint8_t receivedBytes = gc_get((uint8_t*)&status, sizeof(status), modePort, outPort, inPort, bitMask);
 
 	// end of time sensitive code
-	interrupts();
+	SREG = oldSREG;
 
 	// return status information for optional use
 	bool newinput;
@@ -78,62 +79,10 @@ bool Gamecube_::begin(const uint8_t pin, Gamecube_Status_t &status)
 
 
 bool Gamecube_::end(const uint8_t pin){
-	// get the port mask and the pointers to the in/out/mode registers
-	uint8_t bitMask = digitalPinToBitMask(pin);
-	uint8_t port = digitalPinToPort(pin);
-	volatile uint8_t* modePort = portModeRegister(port);
-	volatile uint8_t* outPort = portOutputRegister(port);
-	volatile uint8_t* inPort = portInputRegister(port);
-
 	// Turns off rumble by sending a normal reading request
 	// and discards the information
-	uint8_t command[sizeof(Gamecube_Data_t)] = { 0x40, 0x03, 0x00 };
-
-	// don't want interrupts getting in the way
-	noInterrupts();
-
-	// send the command (only send the first 3 bytes use the buffer twice)
-	gc_send((uint8_t*)&command, 3, modePort, outPort, bitMask);
-
-	// read in new data, even though we do not use it
-	uint8_t receivedBytes = gc_get((uint8_t*)&command, sizeof(command), modePort, outPort, inPort, bitMask);
-
-	// end of time sensitive code
-	interrupts();
-
-	// return status information for optional use
-	bool newinput;
-	if (receivedBytes == sizeof(Gamecube_Data_t))
-		newinput = true;
-	else
-		newinput = false;
-	return newinput;
-
-	/*
-	// this version takes more flash and is more complicated
-
-	// prepare pin for input with pullup
-	*modePort &= ~bitMask;
-	*outPort |= bitMask;
-
-	// Stupid routine to wait for the gamecube controller to stop
-	// sending its response. We don't care what it is, but we
-	// can't start asking for status if it's still responding
-	for (uint8_t forceBreak = 0; forceBreak < 2 * 8 * sizeof(Gamecube_Data_t); forceBreak++) {
-		// get the new input
-		uint8_t newInput = *inPort & bitMask;
-
-		// make sure the line is idle for 10 iterations,
-		// should be plenty. (about 7uS)
-		uint8_t i = 10;
-		while (--i){
-			if ((*inPort & bitMask) != newInput)
-				break;
-		}
-		if (!i) break;
-	}
-	// TODO return value
-	*/
+	Gamecube_Data_t report;
+	return read(pin, report, false);
 }
 
 
@@ -150,16 +99,17 @@ bool Gamecube_::read(const uint8_t pin, Gamecube_Data_t &report, const bool rumb
 	uint8_t command[] = { 0x40, 0x03, rumble & 0x01 };
 
 	// don't want interrupts getting in the way
-	noInterrupts();
+	uint8_t oldSREG = SREG;
+	cli();
 
 	// send the command
-	gc_send((uint8_t*)&command, sizeof(command), modePort, outPort, bitMask);
+	gc_send(command, sizeof(command), modePort, outPort, bitMask);
 
 	// read in new data
 	uint8_t receivedBytes = gc_get((uint8_t*)&report, sizeof(report), modePort, outPort, inPort, bitMask);
 
 	// end of time sensitive code
-	interrupts();
+	SREG = oldSREG;
 
 	// return status information for optional use
 	bool newinput;
@@ -175,6 +125,127 @@ bool Gamecube_::read(const uint8_t pin, Gamecube_Data_t &report, const bool rumb
 // Gamecube/N64 i/o functions
 //================================================================================
 
+// nop definitions, placed here so the header/user
+// doesnt see/use this because it is %[nop] specific
+/*
+Serial.begin(115200);
+for (int n = 0; n < 100; n++) {
+Serial.print("#define nopn");
+Serial.print(n);
+Serial.print(" nopn");
+Serial.println(n % 3);
+}
+*/
+
+#define nopManual(n) nopn ## n
+#define nopn0 // (0 % 3)
+#define nopn1 "nop\n" // (1 % 3)
+#define nopn2 "nop\nnop\n" // (2 % 3)
+#define nopn3 nopn0 // (3 % 3)
+#define nopn4 nopn1 //..
+#define nopn5 nopn2
+#define nopn6 nopn0
+#define nopn7 nopn1
+#define nopn8 nopn2
+#define nopn9 nopn0
+#define nopn10 nopn1
+#define nopn11 nopn2
+#define nopn12 nopn0
+#define nopn13 nopn1
+#define nopn14 nopn2
+#define nopn15 nopn0
+#define nopn16 nopn1
+#define nopn17 nopn2
+#define nopn18 nopn0
+#define nopn19 nopn1
+#define nopn20 nopn2
+#define nopn21 nopn0
+#define nopn22 nopn1
+#define nopn23 nopn2
+#define nopn24 nopn0
+#define nopn25 nopn1
+#define nopn26 nopn2
+#define nopn27 nopn0
+#define nopn28 nopn1
+#define nopn29 nopn2
+#define nopn30 nopn0
+#define nopn31 nopn1
+#define nopn32 nopn2
+#define nopn33 nopn0
+#define nopn34 nopn1
+#define nopn35 nopn2
+#define nopn36 nopn0
+#define nopn37 nopn1
+#define nopn38 nopn2
+#define nopn39 nopn0
+#define nopn40 nopn1
+#define nopn41 nopn2
+#define nopn42 nopn0
+#define nopn43 nopn1
+#define nopn44 nopn2
+#define nopn45 nopn0
+#define nopn46 nopn1
+#define nopn47 nopn2
+#define nopn48 nopn0
+#define nopn49 nopn1
+#define nopn50 nopn2
+#define nopn51 nopn0
+#define nopn52 nopn1
+#define nopn53 nopn2
+#define nopn54 nopn0
+#define nopn55 nopn1
+#define nopn56 nopn2
+#define nopn57 nopn0
+#define nopn58 nopn1
+#define nopn59 nopn2
+#define nopn60 nopn0
+#define nopn61 nopn1
+#define nopn62 nopn2
+#define nopn63 nopn0
+#define nopn64 nopn1
+#define nopn65 nopn2
+#define nopn66 nopn0
+#define nopn67 nopn1
+#define nopn68 nopn2
+#define nopn69 nopn0
+#define nopn70 nopn1
+#define nopn71 nopn2
+#define nopn72 nopn0
+#define nopn73 nopn1
+#define nopn74 nopn2
+#define nopn75 nopn0
+#define nopn76 nopn1
+#define nopn77 nopn2
+#define nopn78 nopn0
+#define nopn79 nopn1
+#define nopn80 nopn2
+#define nopn81 nopn0
+#define nopn82 nopn1
+#define nopn83 nopn2
+#define nopn84 nopn0
+#define nopn85 nopn1
+#define nopn86 nopn2
+#define nopn87 nopn0
+#define nopn88 nopn1
+#define nopn89 nopn2
+#define nopn90 nopn0
+#define nopn91 nopn1
+#define nopn92 nopn2
+#define nopn93 nopn0
+#define nopn94 nopn1
+#define nopn95 nopn2
+#define nopn96 nopn0
+#define nopn97 nopn1
+#define nopn98 nopn2
+#define nopn99 nopn0
+#define nop_reg "%[nop]" // in this sketch we named the register like this
+#define nop_block(id, N) /* nops have to be >=3 in order to work*/ \
+"ldi " nop_reg ", (" #N "/3)\n" /* (1) ldi, start */ \
+".L%=_nop_loop" #id ":\n" /* + ((N-1) * (1) dec + (2) brne), (N-1) loops */ \
+"dec " nop_reg "\n" /* + (1) dec + (1) brne, last loop */ \
+"brne .L%=_nop_loop" #id "\n" /* --> (N * 3) nops */ \
+nopManual(N) /* N % 3 manual nops */
+
 /**
  * This sends the given byte sequence to the controller
  * length must be at least 1
@@ -189,6 +260,7 @@ void gc_send(uint8_t* buff, uint8_t len,
 	// temporary register values used as "clobbers"
 	register uint8_t bitCount;
 	register uint8_t data;
+	register uint8_t nop;
 
 	asm volatile (
 		"; Start of gc_send assembly\n"
@@ -225,34 +297,20 @@ void gc_send(uint8_t* buff, uint8_t len,
 
 
 		// this block is the timing for a 1 bit (1탎 low, 3탎 high)
-		// Stay low for 16 - 2 (above lsl,brcc) - 2 (below st) = 12 cycles
-		"nop\nnop\nnop\nnop\nnop\n" // (5)
-		"nop\nnop\nnop\nnop\nnop\n" // (5)
-		"nop\nnop\n" // (2)
+		// Stay low for 2uS: 16 - 2 (above lsl,brcc) - 2 (below st) = 12 cycles
+		nop_block(1, 12) // nop block 1, 12 cycles
+
 		"st %a[outPort],%[high]\n" // (2) set the line high again
 		// Now stay high for 2탎 of the 3탎 to sync up with the branch below
 		// 2*16 - 2 (for the rjmp) = 30 cycles
-		"nop\nnop\nnop\nnop\nnop\n" // (5)
-		"nop\nnop\nnop\nnop\nnop\n" // (5)
-		"nop\nnop\nnop\nnop\nnop\n" // (5)
-		"nop\nnop\nnop\nnop\nnop\n" // (5)
-		"nop\nnop\nnop\nnop\nnop\n" // (5)
-		"nop\nnop\nnop\nnop\nnop\n" // (5)
+		nop_block(2, 30) // nop block 2, 30 cycles
 		"rjmp .L%=_finish_bit\n" // (2)
 
 
 		// this block is the timing for a 0 bit (3탎 low, 1탎 high)
 		// Need to go high in 3*16 - 3 (above lsl,brcc) - 2 (below st) = 43 cycles
 		".L%=_zero_bit:\n"
-		"nop\nnop\nnop\nnop\nnop\n" // (5)
-		"nop\nnop\nnop\nnop\nnop\n" // (5)
-		"nop\nnop\nnop\nnop\nnop\n" // (5)
-		"nop\nnop\nnop\nnop\nnop\n" // (5)
-		"nop\nnop\nnop\nnop\nnop\n" // (5)
-		"nop\nnop\nnop\nnop\nnop\n" // (5)
-		"nop\nnop\nnop\nnop\nnop\n" // (5)
-		"nop\nnop\nnop\nnop\nnop\n" // (5)
-		"nop\nnop\nnop\n" // (3)
+		nop_block(3, 43) // nop block 3, 43 cycles
 		"st %a[outPort],%[high]\n" // (2) set the line high again
 
 
@@ -261,7 +319,7 @@ void gc_send(uint8_t* buff, uint8_t len,
 		// is high again. We have 1탎 to do the looping and iteration
 		// logic.
 		".L%=_finish_bit:\n"
-		"subi %[bitCount],0x01\n" // (1) subtract 1 from our bit counter
+		"dec %[bitCount]\n" // (1) subtract 1 from our bit counter
 		"breq .L%=_load_next_byte\n" // (1/2) branch if we've sent all the bits of this byte
 
 		// At this point, we have more bits to send in this byte, but the
@@ -269,8 +327,7 @@ void gc_send(uint8_t* buff, uint8_t len,
 		// instructions and the jump below and the st instruction at the
 		// top of the loop)
 		// 16 - 2(above) - 2 (rjmp below) - 2 (st after jump) = 10
-		"nop\nnop\nnop\nnop\nnop\n" // (5)
-		"nop\nnop\nnop\nnop\nnop\n" // (5)
+		nop_block(4, 10) // nop block 4, 10 cycles
 		"rjmp .L%=_bit_loop\n" // (2)
 
 
@@ -278,12 +335,12 @@ void gc_send(uint8_t* buff, uint8_t len,
 		// We need to decrement the byte counter. If it's 0, that's our exit condition.
 		// If not we need to load the next byte and go to the top of the byte loop
 		".L%=_load_next_byte:\n"
-		"subi %[len], 0x01\n" // (1) len--
+		"dec %[len]\n" // (1) len--
 		"breq .L%=_loop_exit\n" // (1/2) if the byte counter is 0, exit
 		// delay block:
 		// needs to go high after 1탎 or 16 cycles
 		// 16 - 5 (above) - 2 (the jump itself) - 5 (after jump) = 4
-		"nop\nnop\nnop\nnop\n" // (4)
+		nop_block(5, 4) // nop block 5, 4 cycles
 		"rjmp .L%=_byte_loop\n" // (2)
 
 
@@ -293,14 +350,11 @@ void gc_send(uint8_t* buff, uint8_t len,
 		// final task: send the stop bit, which is a 1 (1탎 low 3탎 high)
 		// the line goes low in:
 		// 16 - 6 (above since line went high) - 2 (st instruction below) = 8 cycles
-		"nop\nnop\nnop\nnop\nnop\n" // (5)
-		"nop\nnop\nnop\n" // (3)
+		nop_block(6, 8) // nop block 6, 8 cycles
 		"st %a[outPort],%[low]\n" // (2) pull the line low
 		// stay low for 1탎
 		// 16 - 2 (below st) = 14
-		"nop\nnop\nnop\nnop\nnop\n" // (5)
-		"nop\nnop\nnop\nnop\nnop\n" // (5)
-		"nop\nnop\nnop\nnop\n" // (4)
+		nop_block(7, 14) // nop block 7, 14 cycles
 		"st %a[outPort],%[high]\n" // (2) set the line high again
 		// just stay high. no need to wait 3탎 before returning
 
@@ -309,10 +363,11 @@ void gc_send(uint8_t* buff, uint8_t len,
 		: [buff] "+e" (buff), // (read and write)
 		[outPort] "+e" (outPort), // (read and write)
 		[bitCount] "=&d" (bitCount), // (output only, ldi needs the upper registers)
-		[data] "=&r" (data) // (output only)
+		[data] "=&r" (data), // (output only)
+		[nop] "=&d" (nop) // (output only, ldi needs the upper registers)
 
 		// inputs:
-		: [len] "d" (len), // (subi needs the upper registers)
+		: [len] "r" (len),
 		[high] "r" (*outPort | bitMask), // precalculate new pin states
 		[low] "r" (*outPort & ~bitMask) // this works because we turn interrupts off
 
@@ -368,11 +423,12 @@ uint8_t gc_get(uint8_t* buff, uint8_t len,
 		// worst case: 32 - 5 (above) - 6 (above, worst case) - 1 (below) = 20 nops
 		// --> 23 nops
 		".L%=_wait_for_measure:\n"
-		"nop\nnop\nnop\nnop\nnop\n" // (5)
-		"nop\nnop\nnop\nnop\nnop\n" // (5)
-		"nop\nnop\nnop\nnop\nnop\n" // (5)
-		"nop\nnop\nnop\nnop\nnop\n" // (5)
-		"nop\nnop\nnop\n" // (3)
+		// nop block, 23 cycles, use inputVal as temporary reg since we dont need it right now
+		"ldi %[inputVal], (23/3)\n" /* (1) ldi, start */
+		".L%=_nop_loop1:\n" /* + ((N-1) * (1) dec + (2) brne), (N-1) loops */
+		"dec %[inputVal]\n" /* + (1) dec + (1) brne, last loop */
+		"brne .L%=_nop_loop1\n" /* --> (N * 3) nops */
+		nopManual(2) /* 23 % 3 manual nops */
 		// save the data
 		"lsl %[data]\n" // (1) left shift the current byte in %[data]
 		"ld %[inputVal], %a[inPort]\n" // (2) read the pin (happens before the 2 cycles)
@@ -419,7 +475,7 @@ uint8_t gc_get(uint8_t* buff, uint8_t len,
 		: [len] "r" (len),
 		[inPort] "e" (inPort),
 		[bitMask] "r" (bitMask),
-		[timeout] "M" (0x64) // constant
+		[timeout] "M" (NINTENDO_GAMECUBE_N64_TIMEOUT) // constant
 		); // end of asm volatile
 
 	return receivedBytes;
