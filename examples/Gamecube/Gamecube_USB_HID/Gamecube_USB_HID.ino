@@ -164,50 +164,50 @@ void print_gc_report(Gamecube_Data_t &gc_report) {
   // Prints the raw data from the controller
   Serial.println();
   Serial.println(F("Printing Gamecube controller report:"));
-  Serial.print(F("Start: "));
+  Serial.print(F("Start:\t"));
   Serial.println(gc_report.start);
 
-  Serial.print(F("Y:     "));
+  Serial.print(F("Y:\t"));
   Serial.println(gc_report.y);
 
-  Serial.print(F("X:     "));
+  Serial.print(F("X:\t"));
   Serial.println(gc_report.x);
 
-  Serial.print(F("B:     "));
+  Serial.print(F("B:\t"));
   Serial.println(gc_report.b);
 
-  Serial.print(F("A:     "));
+  Serial.print(F("A:\t"));
   Serial.println(gc_report.a);
 
-  Serial.print(F("L:     "));
+  Serial.print(F("L:\t"));
   Serial.println(gc_report.l);
-  Serial.print(F("R:     "));
+  Serial.print(F("R:\t"));
   Serial.println(gc_report.r);
-  Serial.print(F("Z:     "));
+  Serial.print(F("Z:\t"));
   Serial.println(gc_report.z);
 
-  Serial.print(F("Dup:   "));
+  Serial.print(F("Dup:\t"));
   Serial.println(gc_report.dup);
-  Serial.print(F("Ddown: "));
+  Serial.print(F("Ddown:\t"));
   Serial.println(gc_report.ddown);
-  Serial.print(F("Dright:"));
+  Serial.print(F("Dright:\t"));
   Serial.println(gc_report.dright);
-  Serial.print(F("Dleft: "));
+  Serial.print(F("Dleft:\t"));
   Serial.println(gc_report.dleft);
 
-  Serial.print(F("Stick X:"));
+  Serial.print(F("xAxis:\t"));
   Serial.println(gc_report.xAxis, DEC);
-  Serial.print(F("Stick Y:"));
+  Serial.print(F("yAxis:\t"));
   Serial.println(gc_report.yAxis, DEC);
 
-  Serial.print(F("cStick X:"));
+  Serial.print(F("cxAxis:\t"));
   Serial.println(gc_report.cxAxis, DEC);
-  Serial.print(F("cStick Y:"));
+  Serial.print(F("cyAxis:\t"));
   Serial.println(gc_report.cyAxis, DEC);
 
-  Serial.print(F("L:     "));
+  Serial.print(F("L:\t"));
   Serial.println(gc_report.left, DEC);
-  Serial.print(F("R:     "));
+  Serial.print(F("R:\t"));
   Serial.println(gc_report.right, DEC);
   Serial.println();
 }
