@@ -83,9 +83,8 @@ typedef union{
 		uint8_t x : 1;
 		uint8_t y : 1;
 		uint8_t start : 1;
-		uint8_t low0 : 1;
-		uint8_t low1 : 1;
-		uint8_t low2 : 1;
+		uint8_t high0 : 1;
+		uint8_t errstat : 1;
 
 		// second data byte
 		uint8_t dleft : 1;
@@ -95,7 +94,7 @@ typedef union{
 		uint8_t z : 1;
 		uint8_t r : 1;
 		uint8_t l : 1;
-		uint8_t high0 : 1;
+		uint8_t high1 : 1;
 
 		// 3rd-8th data byte
 		uint8_t xAxis;
