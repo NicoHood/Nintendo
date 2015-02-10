@@ -1,93 +1,69 @@
-Arduino Nintendo Library
-========================
+Arduino Nintendo Library 1.1
+============================
 
 This library is made to connect Nintendo Controllers to your Arduino very easy.
-Make sure you grab the right hardware, tear off some cables and use your controllers
-on your PC for example. This requires a 16MHZ Arduino.
+Make sure you grab the right hardware, tear off some cables to use your controllers
+on your PC for example. The requirement are written in each library readme part.
+
+**IDE 1.6 compatible!**
 
 **The library supports the following devices:**
-* Gamecube Controller
-* Gamecube Host(todo)
-* N64 Controller (todo)
-* N64 Host(todo)
+* Gamecube Host
 
-**These examples come with the library:**
-* Gamecube_Print prints GC controller status to your Serial
-* Gamecube_USB_HID makes your GC controller usable on pc. Requires [HID Project](https://github.com/NicoHood/HID).
+**These features are planned:**
+* Gamecube Device(todo)
+* N64 Host(todo, I don't have any)
+* N64 Device(todo, I don't have any)
+* Wii-Mote (USB Host shield)
+* Wii Nunchuk (I2C)
+* Wii Classic Controller (I2C)
+* Wii-Mote plus(USB Host shield)
+* Wiiu Pro Controller (USB Host shield)
+* SNES Controller (I don't have any)
 
-**These features are planned (Wii stuff with USB Host shield or I2C):**
-* Wii-Mote
-* Wii Nunchuk
-* Wii Classic Controller
-* Wii-Mote plus
-* Wiiu Pro Controller
-* SNES Controller (I dont have any right now)
+Download
+========
 
-Gamecube Controller Setup
-=========================
+You have 3 versions you can download:
+* The master includes all fixes to the current stable release. Download it by clicking download at the right.
+Use the [online Wiki](https://github.com/NicoHood/Nintendo/wiki) to get the newest documentation.
+* Download an offline version in [releases](https://github.com/NicoHood/Nintendo/releases).
+It's a snapshot of the current stable release but might have missed some updates that the current master branch has included.
+This also includes an offline version of the wiki. Offline versions will be available after some time when the official release is out.
+* Select [branch 'dev'](https://github.com/NicoHood/Nintendo/tree/dev) to test the bleeding edge of this software. It might now work at all or has a lot of debugging stuff in it.
+If the dev version gets near to a new release a note will be placed here, that you can test the new dev beta.
+Currently there is no beta available.
 
-The Gamecube controller uses 3.3V Logic, 3.3V Power and 5V rumble Power.
 
-####Make sure to use a logic level converter to not burn your controller.
+Wiki
+====
 
-A 1k resistor on the 3.3V side is recommended to pullup the line. See schematic.
+All documentation moved to the [wiki page](https://github.com/NicoHood/Nintendo/wiki).
 
-You better get an extension cable and cut it half. I used a lioncast cable and the colors were:
-**Colors of my extension cable, can be different to yours!**
-See folder development for more information/links below
-```
-1 Yellow: 5V
-2 White:  Data
-3 Red:    Gnd
-4 Brown:  Gnd
-5 Green:  NC
-6 Blue:   3.3V
-7 Black:  Gnd
- ```
- 
- ![Schematic](development/Gamecube/Gamecube_Connection.png)
- ![cable](development/Gamecube/extensioncable.jpg)
+An offline snapshot is available in [releases](https://github.com/NicoHood/Nintendo/releases).
 
-How does it work
-================
-Gamecube:
----------
-Here is just refer to the other documentations, its explained pretty good.
-What i did was to mess around with this some more and integrated easy user access.
-This wouldnt be possible without the work of other people (below) and a logic analyzer.
-Gamecube tested about 60minutes with 2 reading errors (of some million). Should work stable.
 
-How to get assembler output:
-```
- E:\Arduino\arduino-1.5.6-r2\hardware\tools\avr\bin\avr-objdump -S C:\Users\Testuser\AppData\Local\Temp\build8182289464639461553.tmp\GamecubeController13.cpp.elf > E:\RCChannels.dmp
-```
-http://rcarduino.blogspot.de/2012/09/how-to-view-arduino-assembly.html
+Contact
+=======
 
-http://www.atmel.com/Images/doc0856.pdf
+You can contact me on my wordpress blog in the contact section.
 
-This library wouldnt be possible without
-========================================
-* [brownan's N64 to Gamecube Controller Adapter](https://github.com/brownan/Gamecube-N64-Controller)
-* [Salae Logic](https://www.saleae.com/logic)
-* [Yet Another Gamecube Documentation](http://hitmen.c02.at/files/yagcd/yagcd/chap9.html)
-* [Nintendo Gamecube Controller Pinout](http://www.int03.co.uk/crema/hardware/gamecube/gc-control.htm)
-* [HID Project](https://github.com/NicoHood/HID)
+www.nicohood.de
 
-Contact me via my blog:
-http://nicohood.wordpress.com/
-
-Known Bugs
-==========
-**This might not work with newer IDE versions or different compilers (for Gamecube/N64).**
-This is because of the very critical timing and the inline assembler with nops.
-Arduino IDE 1.0.5 and 1.5.6-r2 do work!
-
-Ports next to the input can crosstalk maybe. This should be 0.2uS or so, not really important.
-But this is a general hardware bug of the AVR uCs. Just want to note that.
 
 Version History
 ===============
 ```
+1.1 Release (02.xx.2015)
+* Changes in the Gamecube Code:
+ * Hardcoded all get/send functions with assembler
+ * Now with all IDE versions compatible
+ * Improved pin management/ram usage
+ * Multiple controllers possible
+ * Improved end() functions
+ * Improved example
+ * Updated HID Project example to version 2.1
+
 1.0 Release (01.07.2014)
 * Added Gamecube Device support
 ```
@@ -97,7 +73,7 @@ Licence and Copyright
 If you use this library for any cool project let me know!
 
 ```
-Copyright (c) 2014 NicoHood
+Copyright (c) 2014-2015 NicoHood
 See the readme for credit to other people.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
