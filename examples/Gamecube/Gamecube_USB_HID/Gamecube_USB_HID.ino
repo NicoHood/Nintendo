@@ -1,116 +1,213 @@
 /*
- Copyright (c) 2014 NicoHood
+ Copyright (c) 2014-2015 NicoHood
  See the readme for credit to other people.
 
  Gamecube_USB_HID example
  Use your Gamecube controller with PC as generic HID interface.
- This need the HID library from the HID Project. Also see my Github for that
+ This needs the HID Project.
+ https://github.com/NicoHood/HID
  */
 
-#include <Nintendo.h>
-#include <HID.h>
+#include "Nintendo.h"
 
-const int pinButton = 8;
+// pin definitions
+#define pinGamecubeController1 2
+#define pinLed LED_BUILTIN
+
+// variables to save controller information
+Gamecube_Data_t GamecubeData;
+Gamecube_Status_t GamecubeStatus;
 
 void setup() {
-  HID.begin();
-  //Serial.begin(115200); //this is replaced with HID.begin and baud 115200
-  Gamepad1.begin();
+  // start debug serial
+  Serial.begin(115200);
+  Serial.println(F("Starting controller emulation"));
 
-  Serial.println("Code has started!");
+  // set up debug led
+  pinMode(pinLed, OUTPUT);
 
-  // Button
-  pinMode(pinButton, INPUT_PULLUP);
-
-  // Initialize the gamecube controller by sending it a null byte.
-  // This is unnecessary for a standard controller, but is required for the
-  // Wavebird.
-
-  bool init = false;
-  while (!init) {
-    Serial.println("Press the button to initialize the controller");
-    Serial.println();
-    while (digitalRead(pinButton));
-    delay(300); // simple debounce
-
-    if ((init = Gamecube.begin(A0))) {
-      Serial.println("Controller initialization successfull");
-      // Print the values for debug
-      Serial.print("Device: ");
-      Serial.println(Gamecube.status.device, HEX);
-      Serial.print("Rumble: ");
-      Serial.println(Gamecube.status.rumble, HEX);
-    }
-    else
-      Serial.println("Controller initialization failed");
-  }
-
-  Serial.println();
-  Serial.println("Starting controller emulation");
+  // sends a clean report to the host. This is important on any Arduino type.
+  Gamepad.begin();
 }
 
 void loop() {
-  if (Gamecube.read())
-    sendGamecubeReport();
+  static bool gcInitialized = false;
+
+  if (!gcInitialized) {
+    // Initialize the gamecube controller by sending it a null byte.
+    // This is unnecessary for a standard controller, but is required for the
+    // Wavebird.
+    if (initGamecubeController(pinGamecubeController1, GamecubeStatus)) {
+      gcInitialized = true;
+      digitalWrite(pinLed, LOW);
+    }
+
+    // retry every second
+    else {
+      digitalWrite(pinLed, HIGH);
+      delay(1000);
+    }
+  }
+  // controller is initialized successfull
   else {
-    Serial.println("Couldnt connect to the controller");
-    delay(1000);
+    // try to read data from the controller
+    if (Gamecube.read(pinGamecubeController1, GamecubeData)) {
+      // translate data and send to USB device
+      sendGamecubeReport(GamecubeData);
+      //print_gc_report(GamecubeData);
+      delay(100);
+    }
+    else {
+      Serial.println(F("Could still not connect to the controller."));
+      Serial.println();
+      gcInitialized = false;
+      digitalWrite(pinLed, HIGH);
+      delay(1000);
+    }
   }
 }
 
-void sendGamecubeReport(void) {
+bool initGamecubeController(uint8_t pin, Gamecube_Status_t &gc_status) {
+  // try to initialize controller
+  if (Gamecube.begin(pin, gc_status)) {
+    // print the values for debug
+    Serial.println(F("Controller initialization successfull."));
+
+    // print device information
+    Serial.print(F("Device: "));
+    switch (gc_status.device) {
+      case NINTENDO_DEVICE_GC_WIRED:
+        Serial.println(F("Original Nintendo Gamecube Controller"));
+        break;
+      default:
+        Serial.print(F("Unknown "));
+        Serial.println(gc_status.device, HEX);
+        break;
+    }
+
+    // print rumble state
+    Serial.print(F("Rumble "));
+    if (gc_status.rumble)
+      Serial.println(F("on"));
+    else
+      Serial.println(F("off"));
+
+    Serial.println();
+    return true;
+  }
+  else {
+    Serial.println(F("Controller initialization failed, try again."));
+    Serial.println();
+    return false;
+  }
+}
+
+void sendGamecubeReport(Gamecube_Data_t &gc_report) {
   // The two control sticks
-  Gamepad1.xAxis(Gamecube.report.xAxis << 8);
-  Gamepad1.yAxis(~Gamecube.report.yAxis << 8); // y stick needs to be inverted
-  Gamepad1.rxAxis(Gamecube.report.cxAxis << 8);
-  Gamepad1.ryAxis(Gamecube.report.cyAxis << 8);
+  Gamepad.xAxis(gc_report.xAxis << 8);
+  Gamepad.yAxis(~gc_report.yAxis << 8); // y stick needs to be inverted
+  Gamepad.rxAxis(gc_report.cxAxis << 8);
+  Gamepad.ryAxis(gc_report.cyAxis << 8);
 
   // optional for L/R (PS3 controller uses this methode too)
   // you can also seperate the triggers
   // for Windows calibration comment out the buttons (because l/r triggers the wizard)
-  Gamepad1.zAxis((0x7F + int(Gamecube.report.left - Gamecube.report.right) / 2)<<8);
-  //Gamepad1.zAxis(Gamecube.report.left<<8);
-  //Gamepad1.rzAxis(Gamecube.report.right<<8);
+  Gamepad.zAxis(int8_t(gc_report.left - gc_report.right) / 2);
+  //Gamepad.zAxis(gc_report.left);
+  //Gamepad.rzAxis(gc_report.right);
 
   // D-Pad:
-  switch (Gamecube.report.buttons2 & 0x0F) {
-      // linear
-    case 0x01:
-      Gamepad1.dPad1(0x07);
+  switch (gc_report.dpad) {
+    // linear
+    case NINTENDO_GAMECUBE_DPAD_LEFT:
+      Gamepad.dPad1(GAMEPAD_DPAD_LEFT);
       break;
-    case 0x02:
-      Gamepad1.dPad1(0x03);
+    case NINTENDO_GAMECUBE_DPAD_RIGHT:
+      Gamepad.dPad1(GAMEPAD_DPAD_RIGHT);
       break;
-    case 0x04:
-      Gamepad1.dPad1(0x05);
+    case NINTENDO_GAMECUBE_DPAD_DOWN:
+      Gamepad.dPad1(GAMEPAD_DPAD_DOWN);
       break;
-    case 0x08:
-      Gamepad1.dPad1(0x01);
+    case NINTENDO_GAMECUBE_DPAD_UP:
+      Gamepad.dPad1(GAMEPAD_DPAD_UP);
       break;
-      // diagnoal
-    case 0x05:
-      Gamepad1.dPad1(0x06);
+    // diagnoal
+    case NINTENDO_GAMECUBE_DPAD_DOWN_LEFT:
+      Gamepad.dPad1(GAMEPAD_DPAD_DOWN_LEFT);
       break;
-    case 0x06:
-      Gamepad1.dPad1(0x04);
+    case NINTENDO_GAMECUBE_DPAD_DOWN_RIGHT:
+      Gamepad.dPad1(GAMEPAD_DPAD_DOWN_RIGHT);
       break;
-    case 0x09:
-      Gamepad1.dPad1(0x08);
+    case NINTENDO_GAMECUBE_DPAD_UP_LEFT:
+      Gamepad.dPad1(GAMEPAD_DPAD_UP_LEFT);
       break;
-    case 0x0A:
-      Gamepad1.dPad1(0x02);
+    case NINTENDO_GAMECUBE_DPAD_UP_RIGHT:
+      Gamepad.dPad1(GAMEPAD_DPAD_UP_RIGHT);
       break;
+      // centered
     default:
-      Gamepad1.dPad1(0x00);
+      Gamepad.dPad1(GAMEPAD_DPAD_CENTERED);
       break;
   } // end switch
 
   // 8 Gamecube buttons
-  Gamepad1.buttons(0x00 | (Gamecube.report.buttons1 & 0x1F) | ((Gamecube.report.buttons2 & 0x70) << 1));
+  Gamepad.buttons(0x00UL | (gc_report.buttons0 & 0x1F) | ((gc_report.buttons1 & 0x70) << 1));
 
   // You could add a zero value correction here or a minimum
   // for the left/right shoulder triggers but Windows can calibrate controllers very well.
 
   // Write the information to the PC
-  Gamepad1.write();
+  Gamepad.write();
+}
+
+void print_gc_report(Gamecube_Data_t &gc_report) {
+  // Prints the raw data from the controller
+  Serial.println();
+  Serial.println(F("Printing Gamecube controller report:"));
+  Serial.print(F("Start: "));
+  Serial.println(gc_report.start);
+
+  Serial.print(F("Y:     "));
+  Serial.println(gc_report.y);
+
+  Serial.print(F("X:     "));
+  Serial.println(gc_report.x);
+
+  Serial.print(F("B:     "));
+  Serial.println(gc_report.b);
+
+  Serial.print(F("A:     "));
+  Serial.println(gc_report.a);
+
+  Serial.print(F("L:     "));
+  Serial.println(gc_report.l);
+  Serial.print(F("R:     "));
+  Serial.println(gc_report.r);
+  Serial.print(F("Z:     "));
+  Serial.println(gc_report.z);
+
+  Serial.print(F("Dup:   "));
+  Serial.println(gc_report.dup);
+  Serial.print(F("Ddown: "));
+  Serial.println(gc_report.ddown);
+  Serial.print(F("Dright:"));
+  Serial.println(gc_report.dright);
+  Serial.print(F("Dleft: "));
+  Serial.println(gc_report.dleft);
+
+  Serial.print(F("Stick X:"));
+  Serial.println(gc_report.xAxis, DEC);
+  Serial.print(F("Stick Y:"));
+  Serial.println(gc_report.yAxis, DEC);
+
+  Serial.print(F("cStick X:"));
+  Serial.println(gc_report.cxAxis, DEC);
+  Serial.print(F("cStick Y:"));
+  Serial.println(gc_report.cyAxis, DEC);
+
+  Serial.print(F("L:     "));
+  Serial.println(gc_report.left, DEC);
+  Serial.print(F("R:     "));
+  Serial.println(gc_report.right, DEC);
+  Serial.println();
 }

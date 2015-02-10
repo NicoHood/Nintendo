@@ -19,14 +19,14 @@ Gamecube_Status_t GamecubeStatus;
 void setup() {
   // start debug serial
   Serial.begin(115200);
-  Serial.println("Code has started!");
+  Serial.println(F("Code has started!"));
 
   // Initialize the gamecube controller by sending it a null byte.
   // This is unnecessary for a standard controller, but is required for the
   // Wavebird.
   while (true) {
     // wait for some Serial input
-    Serial.println("Enter any key into the serial monitor to initialize the controller.");
+    Serial.println(F("Enter any key into the serial monitor to initialize the controller."));
     Serial.println();
     waitForSerial();
 
@@ -36,19 +36,19 @@ void setup() {
   }
 
   // initialization successful
-  Serial.println("Starting controller emulation");
+  Serial.println(F("Starting controller emulation"));
   Serial.println();
 }
 
 void loop() {
   // wait for some Serial input
-  Serial.println("Enter any key into the serial monitor to read the controller.");
+  Serial.println(F("Enter any key into the serial monitor to read the controller."));
   char c = toupper(waitForSerial());
 
   // if you enter 'E' to the Serial rumble will turn off
   // the received data will just be discarded
   if (c == 'E') {
-    Serial.println("Turning off rumble.");
+    Serial.println(F("Turning off rumble."));
     Gamecube.end(pinGamecubeController1);
     return;
   }
@@ -56,7 +56,7 @@ void loop() {
   // if you enter 'R' to the Serial monitor it will rumble the motor
   bool rumble;
   if (c == 'R') {
-    Serial.println("Turning rumble on.");
+    Serial.println(F("Turning rumble on."));
     rumble = true;
   }
   else
@@ -64,55 +64,55 @@ void loop() {
 
   // try to read data from the controller
   if (Gamecube.read(pinGamecubeController1, GamecubeData, rumble)) {
-    print_gc_status(GamecubeData);
+    print_gc_report(GamecubeData);
   }
   else {
     // controller connection lost/something went wrong
-    Serial.println("Could not connect to the controller.");
+    Serial.println(F("Could not connect to the controller."));
     Serial.println();
 
     // try to initialize again
-    Serial.println("Trying to initialize again.");
+    Serial.println(F("Trying to initialize again."));
     if (initGamecubeController(pinGamecubeController1, GamecubeStatus)) {
       // initialization successful, try to read again, dont use rumble right now
       if (Gamecube.read(pinGamecubeController1, GamecubeData))
-        print_gc_status(GamecubeData);
+        print_gc_report(GamecubeData);
       else
-        Serial.println("Could still not connect to the controller.");
+        Serial.println(F("Could still not connect to the controller."));
     }
   }
 }
 
-bool initGamecubeController(uint8_t pin, Gamecube_Status_t &status) {
+bool initGamecubeController(uint8_t pin, Gamecube_Status_t &gc_status) {
   // try to initialize controller
-  if (Gamecube.begin(pin, status)) {
+  if (Gamecube.begin(pin, gc_status)) {
     // print the values for debug
-    Serial.println("Controller initialization successfull.");
+    Serial.println(F("Controller initialization successfull."));
 
     // print device information
-    Serial.print("Device: ");
-    switch (status.device) {
+    Serial.print(F("Device: "));
+    switch (gc_status.device) {
       case NINTENDO_DEVICE_GC_WIRED:
-        Serial.println("Original Nintendo Gamecube Controller");
+        Serial.println(F("Original Nintendo Gamecube Controller"));
         break;
       default:
-        Serial.print("Unknown ");
-        Serial.println(status.device, HEX);
+        Serial.print(F("Unknown "));
+        Serial.println(gc_status.device, HEX);
         break;
     }
 
     // print rumble state
-    Serial.print("Rumble ");
-    if (status.rumble)
-      Serial.println("on");
+    Serial.print(F("Rumble "));
+    if (gc_status.rumble)
+      Serial.println(F("on"));
     else
-      Serial.println("off");
+      Serial.println(F("off"));
 
     Serial.println();
     return true;
   }
   else {
-    Serial.println("Controller initialization failed, try again.");
+    Serial.println(F("Controller initialization failed, try again."));
     Serial.println();
     return false;
   }
@@ -132,54 +132,54 @@ char waitForSerial(void) {
   return c;
 }
 
-void print_gc_status(Gamecube_Data_t &report) {
+void print_gc_report(Gamecube_Data_t &gc_report) {
   // Prints the raw data from the controller
   Serial.println();
-  Serial.println("Printing Gamecube controller report:");
-  Serial.print("Start: ");
-  Serial.println(report.start);
+  Serial.println(F("Printing Gamecube controller report:"));
+  Serial.print(F("Start: "));
+  Serial.println(gc_report.start);
 
-  Serial.print("Y:     ");
-  Serial.println(report.y);
+  Serial.print(F("Y:     "));
+  Serial.println(gc_report.y);
 
-  Serial.print("X:     ");
-  Serial.println(report.x);
+  Serial.print(F("X:     "));
+  Serial.println(gc_report.x);
 
-  Serial.print("B:     ");
-  Serial.println(report.b);
+  Serial.print(F("B:     "));
+  Serial.println(gc_report.b);
 
-  Serial.print("A:     ");
-  Serial.println(report.a);
+  Serial.print(F("A:     "));
+  Serial.println(gc_report.a);
 
-  Serial.print("L:     ");
-  Serial.println(report.l);
-  Serial.print("R:     ");
-  Serial.println(report.r);
-  Serial.print("Z:     ");
-  Serial.println(report.z);
+  Serial.print(F("L:     "));
+  Serial.println(gc_report.l);
+  Serial.print(F("R:     "));
+  Serial.println(gc_report.r);
+  Serial.print(F("Z:     "));
+  Serial.println(gc_report.z);
 
-  Serial.print("Dup:   ");
-  Serial.println(report.dup);
-  Serial.print("Ddown: ");
-  Serial.println(report.ddown);
-  Serial.print("Dright:");
-  Serial.println(report.dright);
-  Serial.print("Dleft: ");
-  Serial.println(report.dleft);
+  Serial.print(F("Dup:   "));
+  Serial.println(gc_report.dup);
+  Serial.print(F("Ddown: "));
+  Serial.println(gc_report.ddown);
+  Serial.print(F("Dright:"));
+  Serial.println(gc_report.dright);
+  Serial.print(F("Dleft: "));
+  Serial.println(gc_report.dleft);
 
-  Serial.print("Stick X:");
-  Serial.println(report.xAxis, DEC);
-  Serial.print("Stick Y:");
-  Serial.println(report.yAxis, DEC);
+  Serial.print(F("Stick X:"));
+  Serial.println(gc_report.xAxis, DEC);
+  Serial.print(F("Stick Y:"));
+  Serial.println(gc_report.yAxis, DEC);
 
-  Serial.print("cStick X:");
-  Serial.println(report.cxAxis, DEC);
-  Serial.print("cStick Y:");
-  Serial.println(report.cyAxis, DEC);
+  Serial.print(F("cStick X:"));
+  Serial.println(gc_report.cxAxis, DEC);
+  Serial.print(F("cStick Y:"));
+  Serial.println(gc_report.cyAxis, DEC);
 
-  Serial.print("L:     ");
-  Serial.println(report.left, DEC);
-  Serial.print("R:     ");
-  Serial.println(report.right, DEC);
+  Serial.print(F("L:     "));
+  Serial.println(gc_report.left, DEC);
+  Serial.print(F("R:     "));
+  Serial.println(gc_report.right, DEC);
   Serial.println();
 }
