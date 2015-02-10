@@ -3,42 +3,50 @@ Arduino Nintendo Library 1.1
 
 This library is made to connect Nintendo Controllers to your Arduino very easy.
 Make sure you grab the right hardware, tear off some cables and use your controllers
-on your PC for example. This requires a 16MHZ Arduino.
+on your PC for example. The requirement are written in each library readme part.
 
 **IDE 1.6 compatible!**
 
 **The library supports the following devices:**
-* Gamecube Controller
-* Gamecube Host(todo)
-* N64 Controller (todo)
-* N64 Host(todo)
+* Gamecube Host
 
-**These examples come with the library:**
-* Gamecube_Print prints GC controller status to your Serial
-* Gamecube_USB_HID makes your GC controller usable on pc. Requires [HID Project](https://github.com/NicoHood/HID).
+**These features are planned:**
+* Gamecube Device(todo)
+* N64 Host(todo, I don't have any)
+* N64 Device(todo, I don't have any)
+* Wii-Mote (USB Host shield)
+* Wii Nunchuk (I2C)
+* Wii Classic Controller (I2C)
+* Wii-Mote plus(USB Host shield)
+* Wiiu Pro Controller (USB Host shield)
+* SNES Controller (I don't have any)
 
-**These features are planned (Wii stuff with USB Host shield or I2C):**
-* Wii-Mote
-* Wii Nunchuk
-* Wii Classic Controller
-* Wii-Mote plus
-* Wiiu Pro Controller
-* SNES Controller (I dont have any right now)
-
-Gamecube Controller
+Gamecube Library
 ===================
 
-### Hardware setup
+###Features
 
-The Gamecube controller uses 3.3V Logic, 3.3V Power and 5V rumble Power.
-**Make sure to use a logic level converter to not burn your controller.**
-A 1k resistor on the 3.3V side is recommended to pullup the line. See schematic.
+* IDE 1.6 compatible
+* 16MHz compatible (8/20 possible soon)
+* Host mode
+ * Controller status readable
+ * Controller report readable
+ * Controller Rumble usable
+* Device mode (todo)
 
-The rumble draws about 30mA from what I've measured.
+### Hardware
+
+The Gamecube controller uses 3.3V logic (bidirectional), 3.3V power, 5V rumble power.
+**Make sure to use a logic level converter (it's 1€) to not burn your controller.**
+This _is needed_ compared to [Brownans version](https://github.com/brownan/Gamecube-N64-Controller),
 Using the In/Output method will cause weird delay in the sending and the pulse is 2cycles off sometimes.
+This is needed for more accurate controller timings since the in/out version is 2 cycles off.
+
+A 1k resistor on the 3.3V side is needed to pull up the line. See schematic below.
+The rumble draws about 30mA from what I've measured.
 Currently the library only works for 16MHz, but 20MHz could be possible and 8MHz with some tricks.
 
-You better get an extension cable and cut it half. I used a lioncast cable and the colors were
+You better get an extension cable and cut it half. I used a Lioncast cable and the colors were
 **(can be different to yours!)**:
 ```
 1 Yellow: 5V
@@ -48,20 +56,27 @@ You better get an extension cable and cut it half. I used a lioncast cable and t
 5 Green:  NC
 6 Blue:   3.3V
 7 Black:  Gnd
- ```
- 
- ![Breadboard](Gamecube/Gamecube_bb.png)
- 
- Cut the extension cable and solder some wires. Make sure they don't connect with each other like in the picture.
- 
- ![cable](development/Gamecube/extensioncable.jpg)
+```
+
+Cut the extension cable and solder some jumper wires to connect them to a breadboard.
+Make sure they don't connect with each other like in the picture. You can use shrink tube around each wire.
+
+![cable](development/Gamecube/extensioncable.jpg)
+
+Set up your breadboard like this with a logic level converter.
+
+![Breadboard](Gamecube/Gamecube_bb.png)
+
 
 ### Software
 
 Checkout the examples on how to access and initialize the controller.
-Be aware that every reading turns off interrupts. A bit logic is 4uS long.
+
+Be aware that every reading turns off interrupts. A logic bit pulse is 4uS long.
+```
 4 uS * 8 * (1 + 3) = 128 microseconds to read the status.
 4 uS * 8 * (3 + 8) = 352 microseconds to read the data.
+```
 
 #####bool begin(const uint8_t pin, Gamecube_Status_t &status)
 Initializes the controller and updates the passed in status report.
@@ -144,41 +159,55 @@ typedef union{
 } Gamecube_Status_t;
 ```
 
-###Protocol information
+###Development
 
-How does it work
-================
-Gamecube:
----------
-Here is just refer to the other documentations, its explained pretty good.
-What I did was to mess around with this some more and integrated easy user access.
-This wouldnt be possible without the work of other people (below) and a logic analyzer.
-Gamecube tested about 60minutes with 2 reading errors (of some million). Should work stable.
+Here I just refer to other documentations, its explained pretty good.
+Logical pulses are 3uS+1uS (0) or 1uS+3uS (1) in 8bit packs + one stop bit.
+The Arduino sends the controller a command and the controller responds to that.
+This all happens on the same data line bidirectional.
 
-How to get assembler output:
+I started with [Brownans version](https://github.com/brownan/Gamecube-N64-Controller)
+and improved it over the time. Now the library is written in assembler
+to ensure the most accurate timings and compiler independence.
+
+While developing I used a [logic analyser](https://www.saleae.com/logic/) which is very important.
+I also had to look at the assembly output of the previous C code.
+You have to look at the [AVR Instruction Set](http://www.atmel.com/Images/doc0856.pdf)
+to count the cycles and understand what each command does.
+
+How to manually [get assembler output](http://rcarduino.blogspot.de/2012/09/how-to-view-arduino-assembly.html)
+you may use this command. Or you can also use the provided .bat file.
+You have to edit the Arduino IDE path in the .bat file and start the .bat as administrator.
+
 ```
- E:\Arduino\arduino-1.5.6-r2\hardware\tools\avr\bin\avr-objdump -S C:\Users\Testuser\AppData\Local\Temp\build8182289464639461553.tmp\GamecubeController13.cpp.elf > E:\RCChannels.dmp
+ C:\Users\Nico\Documents\arduino-1.6.0\hardware\tools\avr\bin\avr-objdump -S  C:\Users\Nico\AppData\Local\Temp\build8182289464639461553.tmp\GamecubeController.cpp.elf > C:\Arduino.txt
 ```
-http://rcarduino.blogspot.de/2012/09/how-to-view-arduino-assembly.html
 
-http://www.atmel.com/Images/doc0856.pdf
+###Known Bugs
+Ports next to the input can crosstalk maybe. This should be 0.2uS or so, not really important.
+But this is a general hardware bug of the AVR uCs. Just want to note that.
 
-This library wouldnt be possible without
-========================================
+###Links
 * [brownan's N64 to Gamecube Controller Adapter](https://github.com/brownan/Gamecube-N64-Controller)
-* [Salae Logic](https://www.saleae.com/logic)
 * [Yet Another Gamecube Documentation](http://hitmen.c02.at/files/yagcd/yagcd/chap9.html)
 * [Nintendo Gamecube Controller Pinout](http://www.int03.co.uk/crema/hardware/gamecube/gc-control.htm)
+* [Salae Logic](https://www.saleae.com/logic)
+* [How to get assembler output](http://rcarduino.blogspot.de/2012/09/how-to-view-arduino-assembly.html)
+* [AVR Instruction Set](http://www.atmel.com/Images/doc0856.pdf)
 * [HID Project](https://github.com/NicoHood/HID)
+
+
+N64 Library
+===========
+
+Soon
+
+Contact
+=======
 
 Contact me via my blog:
 http://nicohood.de/
 
-Known Bugs
-==========
-
-Ports next to the input can crosstalk maybe. This should be 0.2uS or so, not really important.
-But this is a general hardware bug of the AVR uCs. Just want to note that.
 
 Version History
 ===============
