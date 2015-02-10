@@ -84,6 +84,7 @@ typedef union{
 		uint8_t y : 1;
 		uint8_t start : 1;
 		uint8_t high0 : 1;
+		uint8_t errlatch : 1;
 		uint8_t errstat : 1;
 
 		// second data byte
