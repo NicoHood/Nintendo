@@ -21,7 +21,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-
 #include "Nintendo.h"
 
 //================================================================================
@@ -34,6 +33,12 @@ Gamecube_::Gamecube_(void){
 	// empty
 }
 
+bool Gamecube_::begin(const uint8_t pin)
+{
+	// discard the information
+	Gamecube_Status_t status;
+	return begin(pin, status);
+}
 
 bool Gamecube_::begin(const uint8_t pin, Gamecube_Status_t &status)
 {

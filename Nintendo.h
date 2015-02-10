@@ -21,7 +21,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-
 #ifndef NINTENDO_H
 #define NINTENDO_H
 
@@ -38,9 +37,6 @@ THE SOFTWARE.
 // Definitions
 //================================================================================
 
-// gamecube controller device status ids
-#define NINTENDO_DEVICE_GC_WIRED 0x0900
-
 #if (F_CPU != 16000000)
 #error This library only supports 16MHz AVRs
 #endif
@@ -52,6 +48,20 @@ THE SOFTWARE.
 // Gamecube
 //================================================================================
 
+// gamecube controller device status ids
+#define NINTENDO_DEVICE_GC_WIRED 0x0900
+
+// dpad directions
+#define NINTENDO_GAMECUBE_DPAD_CENTERED 0
+#define NINTENDO_GAMECUBE_DPAD_UP (1 << 3)
+#define NINTENDO_GAMECUBE_DPAD_UP_RIGHT (NINTENDO_GAMECUBE_DPAD_UP | NINTENDO_GAMECUBE_DPAD_RIGHT)
+#define NINTENDO_GAMECUBE_DPAD_RIGHT (1 << 1)
+#define NINTENDO_GAMECUBE_DPAD_DOWN_RIGHT (NINTENDO_GAMECUBE_DPAD_DOWN | NINTENDO_GAMECUBE_DPAD_RIGHT)
+#define NINTENDO_GAMECUBE_DPAD_DOWN (1 << 2)
+#define NINTENDO_GAMECUBE_DPAD_DOWN_LEFT (NINTENDO_GAMECUBE_DPAD_DOWN | NINTENDO_GAMECUBE_DPAD_LEFT)
+#define NINTENDO_GAMECUBE_DPAD_LEFT (1 << 0)
+#define NINTENDO_GAMECUBE_DPAD_UP_LEFT (NINTENDO_GAMECUBE_DPAD_UP | NINTENDO_GAMECUBE_DPAD_LEFT)
+
 typedef union{
 	// 8 bytes of datareport that we get from the controller
 	uint8_t whole8[];
@@ -59,8 +69,11 @@ typedef union{
 	uint32_t whole32[];
 
 	struct{
-		uint8_t buttons1;
-		uint8_t buttons2;
+		uint8_t buttons0;
+		union{
+			uint8_t buttons1;
+			uint8_t dpad : 4;
+		};
 	};
 
 	struct {
@@ -114,6 +127,7 @@ public:
 	Gamecube_(void);
 
 	bool begin(const uint8_t pin, Gamecube_Status_t &status);
+	bool begin(const uint8_t pin);
 	bool end(const uint8_t pin);
 	bool read(const uint8_t pin, Gamecube_Data_t &report, const bool rumble = false); // default no rumble
 	inline void write(void){} // TODO
