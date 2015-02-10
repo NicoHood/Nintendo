@@ -4,7 +4,10 @@
 
  Gamecube_USB_HID example
  Use your Gamecube controller with PC as generic HID interface.
- (Optional) Serial debug output is displayed, the led indicated errors.
+ (Optional) Serial debug output is displayed
+ (Optional) Press A on the controller to enable rumble.
+ The led indicated errors.
+
  This needs the HID Project.
  https://github.com/NicoHood/HID
 */
@@ -13,6 +16,8 @@
 
 // do you want to use Serial debug output?
 #define DEBUG
+// rumble if button A is pressed?
+//#define RUMBLE
 
 // pin definitions
 #define pinGamecubeController1 2
@@ -40,6 +45,9 @@ void setup() {
 }
 
 void loop() {
+#ifdef RUMBLE
+  static bool rumble = false;
+#endif
   static bool error = true;
 
   if (error) {
@@ -58,8 +66,16 @@ void loop() {
   // controller is initialized successfull
   else {
     // try to read data from the controller, translate and send to USB device
+#ifdef RUMBLE
+    if (Gamecube.read(pinGamecubeController1, GamecubeData, rumble)) {
+      sendGamecubeReport(GamecubeData);
+      // enable rumble if button A is pressed
+      rumble = GamecubeData.a;
+    }
+#else
     if (Gamecube.read(pinGamecubeController1, GamecubeData))
       sendGamecubeReport(GamecubeData);
+#endif
     else {
 #ifdef DEBUG
       Serial.println(F("Could not connect to the controller."));
