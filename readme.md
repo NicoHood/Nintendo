@@ -61,10 +61,11 @@ Version History
  * Now with all IDE versions compatible
  * Improved pin management/ram usage
  * Multiple controllers possible
- * Improved end() functions
+ * Improved end() function
+ * Added new begin() function overload
  * Improved example
  * Updated HID Project example to version 2.1
- * Updated sturcts
+ * Updated structs
 * Moved documentation to the Wiki
 
 1.0 Release (01.07.2014)
