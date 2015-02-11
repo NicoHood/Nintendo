@@ -89,7 +89,7 @@ void loop() {
   digitalWrite(pinLed, error);
 
   // retry every second, else delay a bit to not overload PC
-  if (error){
+  if (error) {
     // reset USB controller report
     Gamepad.end();
     delay(1000);
@@ -145,8 +145,8 @@ void sendGamecubeReport(Gamecube_Data_t &gc_report) {
   // for Windows calibration comment out the l/r buttons below
   // (because l/r triggers the wizard)
   //Gamepad.zAxis(abs(gc_report.left - gc_report.right) - 0x80);
-  Gamepad.zAxis(gc_report.left- 0x80);
-  Gamepad.rzAxis(gc_report.right- 0x80);
+  Gamepad.zAxis(gc_report.left - 0x80);
+  Gamepad.rzAxis(gc_report.right - 0x80);
 
   // D-Pad:
   switch (gc_report.dpad) {
