@@ -89,8 +89,11 @@ void loop() {
   digitalWrite(pinLed, error);
 
   // retry every second, else delay a bit to not overload PC
-  if (error)
+  if (error){
+    // reset USB controller report
+    Gamepad.end();
     delay(1000);
+  }
   else
     delay(10);
 }
