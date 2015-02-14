@@ -1,6 +1,8 @@
 Arduino Nintendo Library 1.1
 ============================
 
+![header](header.jpg)
+
 This library is made to connect Nintendo Controllers to your Arduino very easy.
 Make sure you grab the right hardware, tear off some cables to use your controllers
 on your PC for example. The requirement are written in each library readme part.
