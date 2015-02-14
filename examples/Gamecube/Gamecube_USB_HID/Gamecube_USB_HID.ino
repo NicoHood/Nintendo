@@ -68,9 +68,9 @@ void loop() {
     // try to read data from the controller, translate and send to USB device
 #ifdef RUMBLE
     if (Gamecube.read(pinGamecubeController1, GamecubeData, rumble)) {
-      sendGamecubeReport(GamecubeData);
-      // enable rumble if button A is pressed
+      // enable rumble next time if button A is pressed and send to USB
       rumble = GamecubeData.a;
+      sendGamecubeReport(GamecubeData);
     }
 #else
     if (Gamecube.read(pinGamecubeController1, GamecubeData))
