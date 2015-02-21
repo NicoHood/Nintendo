@@ -57,7 +57,7 @@ www.nicohood.de
 Version History
 ===============
 ```
-1.1 Release (02.xx.2015)
+1.1 Release (14.02.2015)
 * Changes in the Gamecube Code:
  * Hardcoded all get/send functions with assembler
  * Now with all IDE versions compatible
