@@ -1,4 +1,4 @@
-Arduino Nintendo Library 1.1
+Arduino Nintendo Library 1.2
 ============================
 
 ![header](header.jpg)
@@ -9,12 +9,15 @@ on your PC for example. The requirement are written in each library readme part.
 
 **IDE 1.6 compatible!**
 
-**The library supports the following devices:**
-* Gamecube Host
+#####Supported devices
+Host mode means that you can hook up an controller to your Arduino and read its buttons.
+Controller mode means that your Arduino can act as controller.
 
-**These features are planned:**
+* Gamecube Host
+* N64 Host
+
+#####Planned features
 * Gamecube Device(todo)
-* N64 Host(todo, I don't have any)
 * N64 Device(todo, I don't have any)
 * Wii-Mote (USB Host shield)
 * Wii Nunchuk (I2C)
@@ -22,6 +25,9 @@ on your PC for example. The requirement are written in each library readme part.
 * Wii-Mote plus(USB Host shield)
 * Wiiu Pro Controller (USB Host shield)
 * SNES Controller (I don't have any)
+
+#####Todo:
+* N64 rumble -> example
 
 Download
 ========
@@ -57,6 +63,12 @@ www.nicohood.de
 Version History
 ===============
 ```
+1.2 Release (xx.xx.2015)
+* Added N64 Host support
+* Separated consoles
+* Added library.properties
+* Added version identifier
+
 1.1 Release (14.02.2015)
 * Changes in the Gamecube Code:
  * Hardcoded all get/send functions with assembler
