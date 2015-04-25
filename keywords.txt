@@ -10,16 +10,14 @@
 # Methods and Functions (KEYWORD2)
 #######################################
 
-Gamecube	KEYWORD3
+Gamecube	KEYWORD1
 
 begin	KEYWORD2
 end	KEYWORD2
 read	KEYWORD2
 write	KEYWORD2
-gc_send	KEYWORD2
-gc_get	KEYWORD2
-n64_send	KEYWORD2
-n64_get	KEYWORD2
+gc_n64_send	KEYWORD2
+gc_n64_get	KEYWORD2
 buttons0	KEYWORD2
 buttons1	KEYWORD2
 xAxis	KEYWORD2
