@@ -27,6 +27,33 @@ THE SOFTWARE.
 // Gamecube/N64 I/O functions
 //================================================================================
 
+uint8_t gc_n64_send_get(const uint8_t pin, uint8_t* command, const uint8_t commandLen,
+	uint8_t* report, const uint8_t reportLen){
+	// get the port mask and the pointers to the in/out/mode registers
+	uint8_t bitMask = digitalPinToBitMask(pin);
+	uint8_t port = digitalPinToPort(pin);
+	volatile uint8_t* modePort = portModeRegister(port);
+	volatile uint8_t* outPort = portOutputRegister(port);
+	volatile uint8_t* inPort = portInputRegister(port);
+
+	// don't want interrupts getting in the way
+	uint8_t oldSREG = SREG;
+	cli();
+
+	// send the command
+	gc_n64_send(command, commandLen, modePort, outPort, bitMask);
+
+	// read in data
+	uint8_t receivedBytes = gc_n64_get(report, reportLen, modePort, outPort, inPort, bitMask);
+
+	// end of time sensitive code
+	SREG = oldSREG;
+
+	// return received length
+	return receivedBytes;
+}
+
+
 // nop definitions, placed here so the header/user
 // doesnt see/use this because it is %[nop] specific
 /*

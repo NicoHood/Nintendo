@@ -41,6 +41,9 @@ THE SOFTWARE.
 //================================================================================
 
 // functions to communicate with the gc/n64 controller
+uint8_t gc_n64_send_get(const uint8_t pin, uint8_t* command, const uint8_t commandLen,
+	uint8_t* report, const uint8_t reportLen);
+
 void gc_n64_send(uint8_t* buff, uint8_t len,
 	volatile uint8_t* modePort, volatile uint8_t* outPort, uint8_t bitMask);
 

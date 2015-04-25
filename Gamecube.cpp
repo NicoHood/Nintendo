@@ -42,30 +42,13 @@ bool Gamecube_::begin(const uint8_t pin)
 
 bool Gamecube_::begin(const uint8_t pin, Gamecube_Status_t &status)
 {
-	// get the port mask and the pointers to the in/out/mode registers
-	uint8_t bitMask = digitalPinToBitMask(pin);
-	uint8_t port = digitalPinToPort(pin);
-	volatile uint8_t* modePort = portModeRegister(port);
-	volatile uint8_t* outPort = portOutputRegister(port);
-	volatile uint8_t* inPort = portInputRegister(port);
-
 	// Initialize the gamecube controller by sending it a null byte.
 	// This is unnecessary for a standard controller, but is required for the
 	// Wavebird.
 	uint8_t command[] = { 0x00 };
 
-	// don't want interrupts getting in the way
-	uint8_t oldSREG = SREG;
-	cli();
-
-	// send the command
-	gc_n64_send(command, sizeof(command), modePort, outPort, bitMask);
-
-	// read in data
-	uint8_t receivedBytes = gc_n64_get((uint8_t*)&status, sizeof(status), modePort, outPort, inPort, bitMask);
-
-	// end of time sensitive code
-	SREG = oldSREG;
+	// send the command and read in data
+	uint8_t receivedBytes = gc_n64_send_get(pin, command, sizeof(command), (uint8_t*)&status, sizeof(status));
 
 	// return status information for optional use
 	bool newinput;
@@ -93,28 +76,11 @@ bool Gamecube_::end(const uint8_t pin){
 
 bool Gamecube_::read(const uint8_t pin, Gamecube_Data_t &report, const bool rumble)
 {
-	// get the port mask and the pointers to the in/out/mode registers
-	uint8_t bitMask = digitalPinToBitMask(pin);
-	uint8_t port = digitalPinToPort(pin);
-	volatile uint8_t* modePort = portModeRegister(port);
-	volatile uint8_t* outPort = portOutputRegister(port);
-	volatile uint8_t* inPort = portInputRegister(port);
-
 	// command to send to the gamecube, LSB is rumble
 	uint8_t command[] = { 0x40, 0x03, rumble & 0x01 };
 
-	// don't want interrupts getting in the way
-	uint8_t oldSREG = SREG;
-	cli();
-
-	// send the command
-	gc_n64_send(command, sizeof(command), modePort, outPort, bitMask);
-
-	// read in new data
-	uint8_t receivedBytes = gc_n64_get((uint8_t*)&report, sizeof(report), modePort, outPort, inPort, bitMask);
-
-	// end of time sensitive code
-	SREG = oldSREG;
+	// send the command and read in data
+	uint8_t receivedBytes = gc_n64_send_get(pin, command, sizeof(command), (uint8_t*)&report, sizeof(report));
 
 	// return status information for optional use
 	bool newinput;
