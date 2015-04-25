@@ -113,7 +113,9 @@ public:
 	bool begin(const uint8_t pin, Gamecube_Status_t &status);
 	bool begin(const uint8_t pin);
 	bool end(const uint8_t pin);
-	bool read(const uint8_t pin, Gamecube_Data_t &report, const bool rumble = false); // default no rumble
+
+	// default no rumble
+	bool read(const uint8_t pin, Gamecube_Data_t &report, const bool rumble = false);
 	inline void write(void){} // TODO
 };
 
