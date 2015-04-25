@@ -22,3 +22,106 @@ THE SOFTWARE.
 */
 
 #include "N64.h"
+
+
+//================================================================================
+// N64
+//================================================================================
+
+N64_ N64;
+
+N64_::N64_(void){
+	// empty
+}
+
+bool N64_::begin(const uint8_t pin)
+{
+	// discard the information
+	N64_Status_t status;
+	return begin(pin, status);
+}
+
+bool N64_::begin(const uint8_t pin, N64_Status_t &status)
+{
+	// get the port mask and the pointers to the in/out/mode registers
+	uint8_t bitMask = digitalPinToBitMask(pin);
+	uint8_t port = digitalPinToPort(pin);
+	volatile uint8_t* modePort = portModeRegister(port);
+	volatile uint8_t* outPort = portOutputRegister(port);
+	volatile uint8_t* inPort = portInputRegister(port);
+
+	// Initialize the N64 controller by sending it a null byte.
+	// This is unnecessary for a standard controller, but some games do this
+	// TODO similar to gamecube, remove duped code?
+	uint8_t command[] = { 0x00 };
+
+	// don't want interrupts getting in the way
+	uint8_t oldSREG = SREG;
+	cli();
+
+	// send the command
+	gc_n64_send(command, sizeof(command), modePort, outPort, bitMask);
+
+	// read in data
+	uint8_t receivedBytes = gc_n64_get((uint8_t*)&status, sizeof(status), modePort, outPort, inPort, bitMask);
+
+	// end of time sensitive code
+	SREG = oldSREG;
+
+	// return status information for optional use
+	bool newinput;
+	if (receivedBytes == sizeof(status)){
+		// switch the first two bytes to compare it easy with the documentation
+		uint8_t temp = status.whole8[0];
+		status.whole8[0] = status.whole8[1];
+		status.whole8[1] = temp;
+
+		newinput = true;
+	}
+	else
+		newinput = false;
+	return newinput;
+}
+
+
+bool N64_::end(const uint8_t pin){
+	// Turns off rumble by sending a normal reading request
+	// and discards the information
+	N64_Data_t report;
+	return read(pin, report, false);
+}
+
+
+bool N64_::read(const uint8_t pin, N64_Data_t &report, const bool rumble)
+{
+	// get the port mask and the pointers to the in/out/mode registers
+	uint8_t bitMask = digitalPinToBitMask(pin);
+	uint8_t port = digitalPinToPort(pin);
+	volatile uint8_t* modePort = portModeRegister(port);
+	volatile uint8_t* outPort = portOutputRegister(port);
+	volatile uint8_t* inPort = portInputRegister(port);
+
+	// command to send to the N64
+	uint8_t command[] = { 0x01 };
+
+	// don't want interrupts getting in the way
+	uint8_t oldSREG = SREG;
+	cli();
+
+	// send the command
+	gc_n64_send(command, sizeof(command), modePort, outPort, bitMask);
+
+	// read in new data
+	uint8_t receivedBytes = gc_n64_get((uint8_t*)&report, sizeof(report), modePort, outPort, inPort, bitMask);
+
+	// end of time sensitive code
+	SREG = oldSREG;
+
+	// return status information for optional use
+	bool newinput;
+	if (receivedBytes == sizeof(report))
+		newinput = true;
+	else
+		newinput = false;
+	return newinput;
+}
