@@ -24,19 +24,25 @@ THE SOFTWARE.
 // include guard
 #pragma once
 
-// software version
-#define NINTENDO_VERSION 120
-
 #include <Arduino.h>
 
 //================================================================================
-// Nintendo
+// Settings
 //================================================================================
 
-// include all library parts
-#include "Gamecube.h"
-#include "N64.h"
+// timeout for the reading function for the pin to go low/high
+#define NINTENDO_GAMECUBE_N64_TIMEOUT NINTENDO_GAMECUBE_N64_TIMEOUT_US(28)
 
-#if (F_CPU != 16000000)
-#error This library only supports 16MHz AVRs
-#endif
+// timeout for the reading function for the pin to go low/high
+#define NINTENDO_GAMECUBE_N64_TIMEOUT_US(uS) (uS * F_CPU / (1000000 * 7))
+
+//================================================================================
+// Function prototypes
+//================================================================================
+
+// functions to communicate with the gc/n64 controller
+void gc_n64_send(uint8_t* buff, uint8_t len,
+	volatile uint8_t* modePort, volatile uint8_t* outPort, uint8_t bitMask);
+
+uint8_t gc_n64_get(uint8_t* buff, uint8_t len,
+	volatile uint8_t* modePort, volatile uint8_t* outPort, volatile uint8_t * inPort, uint8_t bitMask);

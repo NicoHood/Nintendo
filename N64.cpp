@@ -21,22 +21,4 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-// include guard
-#pragma once
-
-// software version
-#define NINTENDO_VERSION 120
-
-#include <Arduino.h>
-
-//================================================================================
-// Nintendo
-//================================================================================
-
-// include all library parts
-#include "Gamecube.h"
 #include "N64.h"
-
-#if (F_CPU != 16000000)
-#error This library only supports 16MHz AVRs
-#endif
