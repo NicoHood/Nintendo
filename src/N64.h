@@ -64,10 +64,10 @@ typedef union{
 	uint32_t whole32[];
 
 	struct{
-		uint8_t buttons0 : 4;
 		uint8_t dpad : 4;
-		uint8_t buttons1 : 4;
+		uint8_t buttons0 : 4;
 		uint8_t cpad : 4;
+		uint8_t buttons1 : 4;
 	};
 
 	struct {

@@ -4,7 +4,6 @@
 
  N64_Test example
  Enter any key into the serial monitor to start reading.
- Press A on the controller to enable rumble.
  */
 
 #include "Nintendo.h"

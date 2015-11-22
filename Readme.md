@@ -28,6 +28,7 @@ Controller mode means that your Arduino can act as controller.
 
 #####Todo:
 * N64 rumble -> example
+* N64 -> USB example
 
 Download
 ========
