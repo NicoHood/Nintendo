@@ -34,6 +34,7 @@ THE SOFTWARE.
 
 // gamecube controller device status ids
 #define NINTENDO_DEVICE_GC_WIRED 0x0900
+#define NINTENDO_DEVICE_GC_WHEEL 0x0800
 
 // dpad directions
 #define NINTENDO_GAMECUBE_DPAD_CENTERED 0
@@ -115,7 +116,7 @@ public:
 	bool end(const uint8_t pin);
 
 	// default no rumble
-	bool read(const uint8_t pin, Gamecube_Data_t &report, const bool rumble = false);
+	bool read(const uint8_t pin, Gamecube_Status_t &status, Gamecube_Data_t &report, const bool rumble = false);
 	inline void write(void){} // TODO
 };
 
