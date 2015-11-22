@@ -70,14 +70,26 @@ bool Gamecube_::end(const uint8_t pin){
 	// Turns off rumble by sending a normal reading request
 	// and discards the information
 	Gamecube_Data_t report;
-	return read(pin, report, false);
+  Gamecube_Status_t status;
+	return read(pin, status, report, false);
 }
 
 
-bool Gamecube_::read(const uint8_t pin, Gamecube_Data_t &report, const bool rumble)
-{
-	// command to send to the gamecube, LSB is rumble
-	uint8_t command[] = { 0x40, 0x03, rumble & 0x01 };
+bool Gamecube_::read(const uint8_t pin, Gamecube_Status_t &status, Gamecube_Data_t &report, const bool rumble)
+{  
+  uint8_t command[3];
+  switch (status.device){
+  case NINTENDO_DEVICE_GC_WHEEL:
+    command[0] = 0x30;
+    command[1] = 0x00;
+    command[2] = 0x00;
+    break;
+  default:
+    // command to send to the gamecube, LSB is rumble
+    command[0] = 0x40;
+    command[1] = 0x03;
+    command[2] = rumble & 0x01;
+  }
 
 	// send the command and read in data
 	uint8_t receivedBytes = gc_n64_send_get(pin, command, sizeof(command), (uint8_t*)&report, sizeof(report));
