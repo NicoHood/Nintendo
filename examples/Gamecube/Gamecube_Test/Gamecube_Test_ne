@@ -1,0 +1,73 @@
+/*
+ Copyright (c) 2015 Otamay
+ See the readme for credit to other people.
+
+ Gamecube_Test NEW example
+ Using a LCD to debug output. TODO: serial monitor example.
+ Connecting a POT in Analog0 allows to control
+ Steering Well turning and force
+ */
+
+#include <Nintendo.h>
+#include <Gamecube.h>
+
+#include <LiquidCrystal.h>
+LiquidCrystal lcd(12, 11, 2, 3, 4, 5);
+
+Gamecube GamecubeController;
+byte sensorValue = 0;
+
+void setup() {
+  // set up the LCD's number of columns and rows:
+  lcd.begin(16, 2);
+}
+
+void loop() {
+  static bool error = true;
+  if (error) {
+    lcd.clear();
+    lcd.print("Error: Control");
+    lcd.setCursor(0, 1);
+    lcd.print("no detectado.");
+    error = !GamecubeController.attach(6);
+  }else{
+    sensorValue = analogRead(0) / 4;
+    GamecubeController.setForce(sensorValue);
+    GamecubeController.setRumble(false);
+    if (GamecubeController.read()){
+      print_gc_report();
+    }else{
+      error = true;
+    }
+  }
+  delay(10);
+  /* delay(error ? 1000 : 10); */
+}
+
+void print_gc_report(){
+  String salida = "";
+  lcd.home();
+  salida += GamecubeController.start ? "S " : "s ";
+  salida += GamecubeController.dup ? "U" : "u";
+  salida += GamecubeController.ddown ? "D" : "d";
+  salida += GamecubeController.dleft ? "L" : "l";
+  salida += GamecubeController.dright ? "R " : "r ";
+  salida += GamecubeController.x ? "X" : "x";
+  salida += String(GamecubeController.xAxis, HEX) + " ";
+  salida += GamecubeController.y ? "Y" : "y";
+  salida += String(GamecubeController.yAxis, HEX) + " ";
+  salida += GamecubeController.z ? "Z" : "z";
+  lcd.print(salida);
+
+  salida="";
+  lcd.setCursor(0, 1);
+  salida += GamecubeController.a ? "A " : "a ";
+  salida += GamecubeController.b ? "B " : "b ";
+  salida += GamecubeController.l ? "L" : "l";
+  salida += String(GamecubeController.left, HEX) + " ";
+  salida += GamecubeController.r ? "R" : "r";
+  salida += String(GamecubeController.right, HEX) + " ";
+  salida += String(GamecubeController.cxAxis, HEX);
+  salida += String(GamecubeController.cyAxis, HEX);
+  lcd.print(salida);
+}
