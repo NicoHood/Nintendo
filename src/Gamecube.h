@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2014-2015 NicoHood
+Copyright (c) 2015 Otamay
 See the readme for credit to other people.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -32,19 +32,8 @@ THE SOFTWARE.
 
 #include "Gamecube_N64.h"
 
-// gamecube controller device status ids
 #define NINTENDO_DEVICE_GC_WIRED 0x0900
-
-// dpad directions
-#define NINTENDO_GAMECUBE_DPAD_CENTERED 0
-#define NINTENDO_GAMECUBE_DPAD_UP (1 << 3)
-#define NINTENDO_GAMECUBE_DPAD_UP_RIGHT (NINTENDO_GAMECUBE_DPAD_UP | NINTENDO_GAMECUBE_DPAD_RIGHT)
-#define NINTENDO_GAMECUBE_DPAD_RIGHT (1 << 1)
-#define NINTENDO_GAMECUBE_DPAD_DOWN_RIGHT (NINTENDO_GAMECUBE_DPAD_DOWN | NINTENDO_GAMECUBE_DPAD_RIGHT)
-#define NINTENDO_GAMECUBE_DPAD_DOWN (1 << 2)
-#define NINTENDO_GAMECUBE_DPAD_DOWN_LEFT (NINTENDO_GAMECUBE_DPAD_DOWN | NINTENDO_GAMECUBE_DPAD_LEFT)
-#define NINTENDO_GAMECUBE_DPAD_LEFT (1 << 0)
-#define NINTENDO_GAMECUBE_DPAD_UP_LEFT (NINTENDO_GAMECUBE_DPAD_UP | NINTENDO_GAMECUBE_DPAD_LEFT)
+#define NINTENDO_DEVICE_GC_WHEEL 0x0800
 
 typedef union{
 	// 8 bytes of datareport that we get from the controller
@@ -106,17 +95,36 @@ typedef union{
 	};
 } Gamecube_Status_t;
 
-class Gamecube_{
-public:
-	Gamecube_(void);
-
-	bool begin(const uint8_t pin, Gamecube_Status_t &status);
-	bool begin(const uint8_t pin);
-	bool end(const uint8_t pin);
-
-	// default no rumble
-	bool read(const uint8_t pin, Gamecube_Data_t &report, const bool rumble = false);
-	inline void write(void){} // TODO
+class Gamecube{
+ public:
+  Gamecube(void);
+  bool a;
+  bool b;
+  bool x;
+  bool y;
+  bool start;
+  bool dup;
+  bool ddown;
+  bool dleft;
+  bool dright;
+  bool z;
+  bool r;
+  bool l;
+  byte xAxis;
+  byte yAxis;
+  byte cxAxis;
+  byte cyAxis;
+  byte left;
+  byte right;
+  uint16_t device;
+  bool attach(byte pin);
+  bool read(void);
+  void setForce(const byte force = 128);
+  void setRumble(const bool rumble = false);
+ private:
+  static Gamecube_Data_t report;
+  static Gamecube_Status_t status;
+  byte pin;
+  byte force = 128;
+  bool rumble = false;
 };
-
-extern Gamecube_ Gamecube;

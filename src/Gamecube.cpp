@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2014-2015 NicoHood
+Copyright (c) 2015 Otamay
 See the readme for credit to other people.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,66 +27,82 @@ THE SOFTWARE.
 // Gamecube
 //================================================================================
 
-Gamecube_ Gamecube;
-
-Gamecube_::Gamecube_(void){
-	// empty
+Gamecube::Gamecube(void){
 }
 
-bool Gamecube_::begin(const uint8_t pin)
-{
-	// discard the information
-	Gamecube_Status_t status;
-	return begin(pin, status);
-}
-
-bool Gamecube_::begin(const uint8_t pin, Gamecube_Status_t &status)
-{
-	// Initialize the gamecube controller by sending it a null byte.
+bool Gamecube::attach(const byte pin){
+  this->pin = pin;
+  // Initialize the gamecube controller by sending it a null byte.
 	// This is unnecessary for a standard controller, but is required for the
 	// Wavebird.
-	uint8_t command[] = { 0x00 };
+  uint8_t command[] = { 0x00 };
+	uint8_t receivedBytes = gc_n64_send_get(this->pin, command, sizeof(command), (uint8_t*)&(this->status), sizeof(this->status));
+  if (receivedBytes == sizeof(this->status)){
+    // switch the first two bytes to compare it easy with the documentation
+		uint8_t temp = this->status.whole8[0];
+		this->status.whole8[0] = this->status.whole8[1];
+		this->status.whole8[1] = temp;
 
-	// send the command and read in data
-	uint8_t receivedBytes = gc_n64_send_get(pin, command, sizeof(command), (uint8_t*)&status, sizeof(status));
-
-	// return status information for optional use
-	bool newinput;
-	if (receivedBytes == sizeof(status)){
-		// switch the first two bytes to compare it easy with the documentation
-		uint8_t temp = status.whole8[0];
-		status.whole8[0] = status.whole8[1];
-		status.whole8[1] = temp;
-
-		newinput = true;
+    this->device = this->status.device;
+    return true;
 	}
-	else
-		newinput = false;
-	return newinput;
+  return false;
 }
 
-
-bool Gamecube_::end(const uint8_t pin){
-	// Turns off rumble by sending a normal reading request
-	// and discards the information
-	Gamecube_Data_t report;
-	return read(pin, report, false);
+void Gamecube::setForce(const byte force){
+  this->force = force;
+}
+void Gamecube::setRumble(const bool rumble){
+  this->rumble = rumble;
 }
 
+bool Gamecube::read(){
+  uint8_t command[3];
+  switch (this->device){
+    // command to send to the gamecube
+  case NINTENDO_DEVICE_GC_WHEEL:
+    command[0] = 0x30;
+    command[1] = 0x06;
+    command[2] = this->force;
+    break;
+  default:
+  // case NINTENDO_DEVICE_GC_WIRED:
+    command[0] = 0x40;
+    command[1] = 0x03;
+    command[2] = this->rumble & 0x01;
+  //   break;
+  // default:
+  //   return false;
+  }
 
-bool Gamecube_::read(const uint8_t pin, Gamecube_Data_t &report, const bool rumble)
-{
-	// command to send to the gamecube, LSB is rumble
-	uint8_t command[] = { 0x40, 0x03, rumble & 0x01 };
+  // send the command and read in data
+  uint8_t receivedBytes = gc_n64_send_get(this->pin, command, sizeof(command), (uint8_t*)&(this->report), sizeof(this->report));
 
-	// send the command and read in data
-	uint8_t receivedBytes = gc_n64_send_get(pin, command, sizeof(command), (uint8_t*)&report, sizeof(report));
+  if (receivedBytes == sizeof(this->report)){
+    this->a = this->report.a;
+    this->b = this->report.b;
+    this->x = this->report.x;
+    this->y = this->report.y;
+    this->start = this->report.start;
+    this->dup = this->report.dup;
+    this->ddown = this->report.ddown;
+    this->dleft = this->report.dleft;
+    this->dright = this->report.dright;
+    this->z = this->report.z;
+    this->r = this->report.r;
+    this->l = this->report.l;
+    this->xAxis = this->report.xAxis;
+    this->yAxis = this->report.yAxis;
+    this->cxAxis = this->report.cxAxis;
+    this->cyAxis = this->report.cyAxis;
+    this->left = this->report.left;
+    this->right = this->report.right;  
 
-	// return status information for optional use
-	bool newinput;
-	if (receivedBytes == sizeof(report))
-		newinput = true;
-	else
-		newinput = false;
-	return newinput;
+    // return status information for optional use
+		return true;
+  }
+  return false;
 }
+
+Gamecube_Status_t Gamecube::status;
+Gamecube_Data_t Gamecube::report;
