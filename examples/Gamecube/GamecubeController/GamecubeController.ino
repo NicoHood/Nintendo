@@ -33,7 +33,7 @@ void setup()
   Serial.println();
 }
 
-void loop() 
+void loop()
 {
   // Try to read the controller data
   if (GamecubeController.read())
@@ -43,6 +43,14 @@ void loop()
     auto report = GamecubeController.getReport();
     print_gc_report(report, status);
     delay(100);
+
+    // Rumble if button "A" was pressed
+    if (report.a) {
+      GamecubeController.setRumble(true);
+    }
+    else {
+      GamecubeController.setRumble(false);
+    }
   }
   else
   {
