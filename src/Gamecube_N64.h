@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2014-2015 NicoHood
+Copyright (c) 2014-2016 NicoHood
 See the readme for credit to other people.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,31 +21,29 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-// include guard
+// Include guard
 #pragma once
 
 #include <Arduino.h>
 
 //================================================================================
-// Settings
-//================================================================================
-
-// timeout for the reading function for the pin to go low/high
-#define NINTENDO_GAMECUBE_N64_TIMEOUT NINTENDO_GAMECUBE_N64_TIMEOUT_US(28)
-
-// timeout for the reading function for the pin to go low/high
-#define NINTENDO_GAMECUBE_N64_TIMEOUT_US(uS) (uS * F_CPU / (1000000 * 7))
-
-//================================================================================
 // Function prototypes
 //================================================================================
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // functions to communicate with the gc/n64 controller
 uint8_t gc_n64_send_get(const uint8_t pin, uint8_t* command, const uint8_t commandLen,
 	uint8_t* report, const uint8_t reportLen);
 
-void gc_n64_send(uint8_t* buff, uint8_t len,
+void gc_n64_send(const uint8_t* buff, uint8_t len,
 	volatile uint8_t* modePort, volatile uint8_t* outPort, uint8_t bitMask);
 
 uint8_t gc_n64_get(uint8_t* buff, uint8_t len,
 	volatile uint8_t* modePort, volatile uint8_t* outPort, volatile uint8_t * inPort, uint8_t bitMask);
+
+#ifdef __cplusplus
+}
+#endif

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2014-2015 NicoHood
+Copyright (c) 2014-2016 NicoHood
 See the readme for credit to other people.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,36 +21,30 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-// include guard
+// Include guard
 #pragma once
 
 #include <Arduino.h>
 
 //================================================================================
-// Gamecube
+// Gamecube Definitions
 //================================================================================
 
 #include "Gamecube_N64.h"
 
-// gamecube controller device status ids
-#define NINTENDO_DEVICE_GC_WIRED 0x0900
+// Gamecube controller device status ids
+#define NINTENDO_DEVICE_GC_WIRED 	0x0900
+#define NINTENDO_DEVICE_GC_NONE		0x0000
 
-// dpad directions
-#define NINTENDO_GAMECUBE_DPAD_CENTERED 0
-#define NINTENDO_GAMECUBE_DPAD_UP (1 << 3)
-#define NINTENDO_GAMECUBE_DPAD_UP_RIGHT (NINTENDO_GAMECUBE_DPAD_UP | NINTENDO_GAMECUBE_DPAD_RIGHT)
-#define NINTENDO_GAMECUBE_DPAD_RIGHT (1 << 1)
-#define NINTENDO_GAMECUBE_DPAD_DOWN_RIGHT (NINTENDO_GAMECUBE_DPAD_DOWN | NINTENDO_GAMECUBE_DPAD_RIGHT)
-#define NINTENDO_GAMECUBE_DPAD_DOWN (1 << 2)
-#define NINTENDO_GAMECUBE_DPAD_DOWN_LEFT (NINTENDO_GAMECUBE_DPAD_DOWN | NINTENDO_GAMECUBE_DPAD_LEFT)
-#define NINTENDO_GAMECUBE_DPAD_LEFT (1 << 0)
-#define NINTENDO_GAMECUBE_DPAD_UP_LEFT (NINTENDO_GAMECUBE_DPAD_UP | NINTENDO_GAMECUBE_DPAD_LEFT)
+//================================================================================
+// Gamecube Typedefs
+//================================================================================
 
 typedef union{
 	// 8 bytes of datareport that we get from the controller
-	uint8_t whole8[];
-	uint16_t whole16[];
-	uint32_t whole32[];
+	uint8_t raw8[8];
+	uint16_t raw16[0];
+	uint32_t raw32[0];
 
 	struct{
 		uint8_t buttons0;
@@ -67,7 +61,7 @@ typedef union{
 		uint8_t x : 1;
 		uint8_t y : 1;
 		uint8_t start : 1;
-		uint8_t high0 : 1;
+		uint8_t origin : 1; // Indicates if GetOrigin(0x41) was called (LOW)
 		uint8_t errlatch : 1;
 		uint8_t errstat : 1;
 
@@ -89,34 +83,71 @@ typedef union{
 		uint8_t left;
 		uint8_t right;
 	};
-} Gamecube_Data_t;
+} Gamecube_Report_t;
+
 
 typedef union{
 	// 3 bytes of statusreport that we get from the controller
-	uint8_t whole8[];
-	uint16_t whole16[];
+	uint8_t raw8[3];
+	uint16_t raw16[0];
 	struct {
-		// device information
+		// Device information, needs to be swapped to fit the documentation
 		uint16_t device;
+		// TODO more detailed device information
 
 		// controller status (only rumble is known)
-		uint8_t status0 : 3;
-		uint8_t rumble : 1;
-		uint8_t status1 : 4;
+		union{
+			uint8_t status;
+			struct{
+				uint8_t status0 : 3;
+				uint8_t rumble : 1;
+				uint8_t status1 : 4;
+			};
+		};
 	};
 } Gamecube_Status_t;
 
-class Gamecube_{
-public:
-	Gamecube_(void);
 
-	bool begin(const uint8_t pin, Gamecube_Status_t &status);
-	bool begin(const uint8_t pin);
-	bool end(const uint8_t pin);
+typedef union{
+	// GetOrigin requests the initial values of the controller when it was plugged in (powered up)
+	// This request consists of a normal data package and 2 unknown bytes.
+	// It is possible that those mark the deadzone/toleranz, but are zero in my tests.
+	// If the GetOrigin request was not sent to the controller, it will respond it in the data report.
+	// The gamecube will NOT accept controller data when no GetOrigin request was made (origin bit in data report set).
+	uint8_t raw8[10];
+	uint16_t raw16[0];
+	uint32_t raw32[0];
 
-	// default no rumble
-	bool read(const uint8_t pin, Gamecube_Data_t &report, const bool rumble = false);
-	inline void write(void){} // TODO
+	struct{
+		Gamecube_Report_t inititalData;
+		uint8_t deadzone0;
+		uint8_t deadzone1;
+	};
+} Gamecube_Origin_t;
+
+
+struct Gamecube_Data_t{
+	// All information required for reading/writing a Gamecube Controller
+	Gamecube_Status_t status;
+	Gamecube_Origin_t origin;
+	Gamecube_Report_t report;
 };
 
-extern Gamecube_ Gamecube;
+
+//================================================================================
+// Gamecube Function Prototypes
+//================================================================================
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+// Functions to communicate with the gc controller
+bool gc_init(const uint8_t pin, Gamecube_Status_t* status);
+bool gc_origin(const uint8_t pin, Gamecube_Origin_t* origin);
+bool gc_read(const uint8_t pin, Gamecube_Report_t* report, const bool rumble);
+uint8_t gc_write(const uint8_t pin, Gamecube_Status_t* status, Gamecube_Origin_t* origin, Gamecube_Report_t* report);
+
+#ifdef __cplusplus
+}
+#endif
