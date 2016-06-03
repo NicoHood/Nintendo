@@ -32,23 +32,23 @@ THE SOFTWARE.
 
 class CGamecubeController : protected Gamecube_Data_t {
 public:
-	inline CGamecubeController(const uint8_t p);
-	inline void reset(void);
-	inline bool begin(void);
-	inline uint16_t getDevice(void);
-	inline bool connected(void);
-	inline bool read(void);
-	inline bool getRumble(void);
-	inline bool setRumble(bool rumble);
-	inline bool end(void);
-	inline Gamecube_Status_t getStatus(void);
-	inline Gamecube_Origin_t getOrigin(void);
-	inline Gamecube_Report_t getReport(void);
-	inline Gamecube_Data_t getData(void);
+    inline CGamecubeController(const uint8_t p);
+    inline void reset(void);
+    inline bool begin(void);
+    inline uint16_t getDevice(void);
+    inline bool connected(void);
+    inline bool read(void);
+    inline bool getRumble(void);
+    inline bool setRumble(bool rumble);
+    inline bool end(void);
+    inline Gamecube_Status_t getStatus(void);
+    inline Gamecube_Origin_t getOrigin(void);
+    inline Gamecube_Report_t getReport(void);
+    inline Gamecube_Data_t getData(void);
 
 protected:
-	const uint8_t pin;
-	friend class CGamecubeConsole;
+    const uint8_t pin;
+    friend class CGamecubeConsole;
 };
 
 
@@ -58,13 +58,13 @@ protected:
 
 class CGamecubeConsole{
 public:
-	inline CGamecubeConsole(const uint8_t p);
-	inline bool write(Gamecube_Data_t &data);
-	inline bool write(CGamecubeController &controller);
-	inline bool write(Gamecube_Report_t &report);
+    inline CGamecubeConsole(const uint8_t p);
+    inline bool write(Gamecube_Data_t &data);
+    inline bool write(CGamecubeController &controller);
+    inline bool write(Gamecube_Report_t &report);
 
 protected:
-	const uint8_t pin;
+    const uint8_t pin;
 };
 
 #include "GamecubeAPI.hpp"
