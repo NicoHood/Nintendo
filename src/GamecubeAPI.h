@@ -26,6 +26,13 @@ THE SOFTWARE.
 
 #include "Gamecube.h"
 
+// Default data for an original, initialized, centered Gamecube controller
+static constexpr Gamecube_Data_t defaultGamecubeData = {
+    .status = { 0x09, 0x00, 0x03 },
+    .origin = { 0x00, 0x80, 0x80, 0x80, 0x80, 0x80, 0x1F, 0x1F, 0x00, 0x00 },
+    .report = { 0x00, 0x80, 0x80, 0x80, 0x80, 0x80, 0x1F, 0x1F }
+};
+
 //================================================================================
 // Gamecube Controller API
 //================================================================================

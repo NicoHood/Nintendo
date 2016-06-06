@@ -241,11 +241,7 @@ bool CGamecubeConsole::write(CGamecubeController &controller)
 bool CGamecubeConsole::write(Gamecube_Report_t &report)
 {
     // Inititalize init and origin with default values
-    Gamecube_Data_t data = {
-        .status = { 0x09, 0x00, 0x03 },
-        .origin = { 0x00, 0x80, 0x80, 0x80, 0x80, 0x80, 0x1F, 0x1F, 0x00, 0x00 },
-        .report = { }
-    };
+    Gamecube_Data_t data = defaultGamecubeData;
 
     // Copy report into the temporary struct and write to gamecube
     memcpy(&data.report, &report, sizeof(data.report));
