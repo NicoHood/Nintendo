@@ -92,7 +92,7 @@ License and Copyright
 If you use this library for any cool project let me know!
 
 ```
-Copyright (c) 2014-2015 NicoHood
+Copyright (c) 2014-2016 NicoHood
 See the readme for credit to other people.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy

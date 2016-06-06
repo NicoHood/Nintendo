@@ -9,8 +9,8 @@
 #include "Nintendo.h"
 
 // Define a Gamecube Controller and a Console
-CGamecubeController GamecubeController(7);
-CGamecubeConsole GamecubeConsole(8);
+CGamecubeController GamecubeController1(7);
+CGamecubeConsole GamecubeConsole1(8);
 
 // Pin definitions
 #define pinLed LED_BUILTIN
@@ -19,16 +19,19 @@ void setup()
 {
   // Set up debug led
   pinMode(pinLed, OUTPUT);
+
+  // Start debug serial
+  Serial.begin(115200);
 }
 
 
 void loop()
 {
   // Try to read the controller data
-  if (GamecubeController.read())
+  if (GamecubeController1.read())
   {
     // Mirror the controller data to the console
-    if (!GamecubeConsole.write(GamecubeController))
+    if (!GamecubeConsole1.write(GamecubeController1))
     {
       Serial.println(F("Error writing Gamecube controller."));
       digitalWrite(pinLed, HIGH);
