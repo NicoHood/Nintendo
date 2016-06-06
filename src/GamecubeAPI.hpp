@@ -220,6 +220,10 @@ bool CGamecubeConsole::write(Gamecube_Data_t &data)
         data.status.rumble = true;
         return true;
     }
+    else if (ret == 5) {
+        data.status.rumble = false;
+        return true;
+    }
 
     // Return error if no reading was possible
     return false;

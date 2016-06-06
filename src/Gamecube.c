@@ -112,13 +112,41 @@ uint8_t gc_write(const uint8_t pin, Gamecube_Status_t* status, Gamecube_Origin_t
         ret = 2;
     }
     // Get data. Do not check last byte (command[2]), as the flags are unknown
-    else if (receivedBytes == 3 && command[0] == 0x40 && command[1] == 0x03 \
-        && (command[2] == 0x00 || command[2] == 0x01))
+    else if (receivedBytes == 3 && command[0] == 0x40 && command[1] == 0x03)
     {
         gc_n64_send(report->raw8, sizeof(Gamecube_Report_t), modePort, outPort, bitMask);
         ret = 3;
-        if(command[2] & 0x01){
+        // The first byte probably flags a gamecube reading (0x40), as the same
+        // protocol is also used for N64. The lower nibble seems to be the mode:
+        // 0x40 (followed by 2 bytes) reading
+        // 0x41 get origin (1 byte)
+        // 0x42 (followed by 2 bytes) seems to force mode 0x02 below
+        // 0x43 (followed by 2 bytes) seems to force mode 0x02 below
+
+        // The 2nd byte (command[1]) seems to request a special data format.
+        // I've noticed formats that merge the L + R data.
+        // There seem to be only 4 data formats, the rest is ignore.
+        // 0x00 First 4 bytes: buttons0+1 + X + Y, C-Stick, L+R minimum of both, 0x00 fixed
+        // 0x01 First 4 bytes: buttons0+1 + X + Y, C-Stick Horizontal only, R, L, 0x00 fixed
+        // 0x02 First 4 bytes: buttons0+1 + X + Y, C-Stick Horizontal only, L+R minimum of both, 0x02 fixed, 0x01 fixed
+        // 0x03 Normal reading
+
+        // I've seen 3 last options for the last byte (command[2]):
+        // 0x00 Normal reading
+        // 0x01 Enable rumble
+        // 0x02 Normal reading, rumble was at least called once
+        // 0x03 ??? - never seen so far
+        // Rumble: 1, 5, 9, 13, 17, ...
+        // You can see that only 4 of those requests are possible,
+        // the gamecube will ignore the left 6 MSB.
+        if((command[2] % 4) == 0x01){
             ret = 4;
+        }
+        else if((command[2] % 4) == 0x02){
+            ret = 5;
+        }
+        else if((command[2] % 4) == 0x03){
+            ret = 6;
         }
     }
 
