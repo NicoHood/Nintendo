@@ -63,15 +63,15 @@ bool CGamecubeController::begin(void)
 
 uint16_t CGamecubeController::getDevice(void)
 {
-    // Swap the first two bytes to compare it easy with the documentation
-    return ((uint16_t)status.raw8[0] << 8) | status.raw8[1];
+    // (Optional) swap the first two bytes to compare it easy with the documentation
+    return status.device;
 }
 
 
 bool CGamecubeController::connected(void)
 {
     // Check if the device identifier is at least not zero
-    return (getDevice() != NINTENDO_DEVICE_GC_NONE);
+    return (status.device != NINTENDO_DEVICE_GC_NONE);
 }
 
 

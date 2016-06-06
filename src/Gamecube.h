@@ -33,7 +33,9 @@ THE SOFTWARE.
 #include "Gamecube_N64.h"
 
 // Gamecube controller device status ids
-#define NINTENDO_DEVICE_GC_WIRED     0x0900
+// You need to switch the bytes for the docs which are widely available online.
+// A default Gamecube controller would look like 0x0900.
+#define NINTENDO_DEVICE_GC_WIRED     0x0009
 #define NINTENDO_DEVICE_GC_NONE      0x0000
 
 //================================================================================
