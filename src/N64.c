@@ -21,22 +21,43 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-// Include guard
-#pragma once
-
-// Software version
-#define NINTENDO_VERSION 120
-
-#include <Arduino.h>
-
-#if (F_CPU != 16000000)
-#error This library only supports 16MHz AVRs
-#endif
+#include "N64.h"
 
 //================================================================================
-// Nintendo
+// N64 Controller
 //================================================================================
 
-// include all library parts
-#include "GamecubeAPI.h"
-#include "N64API.h"
+bool n64_init(const uint8_t pin, N64_Status_t* status)
+{
+    // Initialize the N64 controller by sending it a null byte.
+    // This is unnecessary for a standard controller, but the console does this.
+    uint8_t command[] = { 0x00 };
+
+    // Send the command and read in data
+    uint8_t receivedBytes = gc_n64_send_get(pin, command, sizeof(command), (uint8_t*)status, sizeof(N64_Status_t));
+
+    // Return status information for optional use.
+    // On error the report may have been modified!
+    return (receivedBytes == sizeof(N64_Status_t));
+}
+
+
+bool n64_read(const uint8_t pin, N64_Report_t* report)
+{
+    // Command to send to the N64
+    uint8_t command[] = { 0x01 };
+
+    // Send the command and read in data
+    uint8_t receivedBytes = gc_n64_send_get(pin, command, sizeof(command), (uint8_t*)report, sizeof(N64_Report_t));
+
+    // Return status information for optional use.
+    // On error the report may have been modified!
+    return (receivedBytes == sizeof(N64_Report_t));
+}
+
+
+//================================================================================
+// N64 Console
+//================================================================================
+
+// TODO

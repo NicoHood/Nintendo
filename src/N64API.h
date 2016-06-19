@@ -24,19 +24,54 @@ THE SOFTWARE.
 // Include guard
 #pragma once
 
-// Software version
-#define NINTENDO_VERSION 120
+#include "N64.h"
 
-#include <Arduino.h>
-
-#if (F_CPU != 16000000)
-#error This library only supports 16MHz AVRs
-#endif
+// Default data for an original, initialized, centered N64 controller
+// TODO
+// static constexpr N64_Data_t defaultN64Data = {
+//     .status = { 0x05, 0x00, ??? },
+//     .report = { ??? }
+// };
 
 //================================================================================
-// Nintendo
+// N64 Controller API
 //================================================================================
 
-// include all library parts
-#include "GamecubeAPI.h"
-#include "N64API.h"
+class CN64Controller : protected N64_Data_t {
+public:
+    inline CN64Controller(const uint8_t p);
+    inline void reset(void);
+    inline bool begin(void);
+    inline uint16_t getDevice(void);
+    inline bool connected(void);
+    inline bool read(void);
+    inline bool getRumble(void);
+    //inline bool setRumble(bool rumble);
+    inline bool end(void);
+    inline N64_Status_t getStatus(void);
+    inline N64_Report_t getReport(void);
+    inline N64_Data_t getData(void);
+
+protected:
+    const uint8_t pin;
+    friend class CN64Console;
+};
+
+
+//================================================================================
+// N64 Host API
+//================================================================================
+
+// TODO
+// class CN64Console{
+// public:
+//     inline CN64Console(const uint8_t p);
+//     inline bool write(N64_Data_t &data);
+//     inline bool write(CN64Controller &controller);
+//     inline bool write(N64_Report_t &report);
+//
+// protected:
+//     const uint8_t pin;
+// };
+
+#include "N64API.hpp"

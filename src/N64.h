@@ -27,41 +27,27 @@ THE SOFTWARE.
 #include <Arduino.h>
 
 //================================================================================
-// N64
+// N64 Definitions
 //================================================================================
 
 #include "Gamecube_N64.h"
 
 // N64 controller device status ids
-#define NINTENDO_DEVICE_N64_WIRED 0x0500
+// You need to switch the bytes for the docs which are widely available online.
+// A default N64 controller would look like 0x0500.
+#define NINTENDO_DEVICE_N64_WIRED   0x0005
+#define NINTENDO_DEVICE_N64_NONE    0x0000
 
-// dpad directions
-#define NINTENDO_N64_DPAD_CENTERED 0
-#define NINTENDO_N64_DPAD_UP (1 << 3)
-#define NINTENDO_N64_DPAD_UP_RIGHT (NINTENDO_N64_DPAD_UP | NINTENDO_N64_DPAD_RIGHT)
-#define NINTENDO_N64_DPAD_RIGHT (1 << 0)
-#define NINTENDO_N64_DPAD_DOWN_RIGHT (NINTENDO_N64_DPAD_DOWN | NINTENDO_N64_DPAD_RIGHT)
-#define NINTENDO_N64_DPAD_DOWN (1 << 2)
-#define NINTENDO_N64_DPAD_DOWN_LEFT (NINTENDO_N64_DPAD_DOWN | NINTENDO_N64_DPAD_LEFT)
-#define NINTENDO_N64_DPAD_LEFT (1 << 1)
-#define NINTENDO_N64_DPAD_UP_LEFT (NINTENDO_N64_DPAD_UP | NINTENDO_N64_DPAD_LEFT)
 
-// cpad directions
-#define NINTENDO_N64_CPAD_CENTERED 0
-#define NINTENDO_N64_CPAD_UP (1 << 3)
-#define NINTENDO_N64_CPAD_UP_RIGHT (NINTENDO_N64_CPAD_UP | NINTENDO_N64_CPAD_RIGHT)
-#define NINTENDO_N64_CPAD_RIGHT (1 << 0)
-#define NINTENDO_N64_CPAD_DOWN_RIGHT (NINTENDO_N64_CPAD_DOWN | NINTENDO_N64_CPAD_RIGHT)
-#define NINTENDO_N64_CPAD_DOWN (1 << 2)
-#define NINTENDO_N64_CPAD_DOWN_LEFT (NINTENDO_N64_CPAD_DOWN | NINTENDO_N64_CPAD_LEFT)
-#define NINTENDO_N64_CPAD_LEFT (1 << 1)
-#define NINTENDO_N64_CPAD_UP_LEFT (NINTENDO_N64_CPAD_UP | NINTENDO_N64_CPAD_LEFT)
+//================================================================================
+// N64 Typedefs
+//================================================================================
 
 typedef union{
     // 4 bytes of datareport that we get from the controller
-    uint8_t whole8[];
-    uint16_t whole16[];
-    uint32_t whole32[];
+    uint8_t raw8[4];
+    uint16_t raw16[0];
+    uint32_t raw32[0];
 
     struct{
         uint8_t dpad : 4;
@@ -95,34 +81,30 @@ typedef union{
         int8_t xAxis;
         int8_t yAxis;
     };
-} N64_Data_t;
+} N64_Report_t;
 
-typedef union{
-    // 3 bytes of statusreport that we get from the controller
-    uint8_t whole8[];
-    uint16_t whole16[];
-    struct {
-        // device information
-        uint16_t device;
+// Gamecube an N64 use the same status schema
+typedef Gamecube_N64_Status_t N64_Status_t;
 
-        // controller status (only rumble is known)
-        uint8_t status0 : 3;
-        uint8_t rumble : 1;
-        uint8_t status1 : 4;
-    };
-} N64_Status_t;
-
-class N64_{
-public:
-    N64_(void);
-
-    bool begin(const uint8_t pin, N64_Status_t &status);
-    bool begin(const uint8_t pin);
-    bool end(const uint8_t pin);
-
-    // default no rumble
-    bool read(const uint8_t pin, N64_Data_t &report, const bool rumble = false);
-    inline void write(void){} // TODO
+struct N64_Data_t{
+    // All information required for reading/writing a N64 Controller
+    N64_Status_t status;
+    N64_Report_t report;
 };
 
-extern N64_ N64;
+
+//================================================================================
+// N64 Function Prototypes
+//================================================================================
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+// Functions to communicate with the gc controller
+bool n64_init(const uint8_t pin, N64_Status_t* status);
+bool n64_read(const uint8_t pin, N64_Report_t* report);
+
+#ifdef __cplusplus
+}
+#endif
