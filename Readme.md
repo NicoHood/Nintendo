@@ -9,16 +9,18 @@ on your PC for example. The requirement are written in each library readme part.
 
 **IDE 1.6 compatible!**
 
-#####Supported devices
+##### Supported devices
 Host mode means that you can hook up an controller to your Arduino and read its buttons.
 Controller mode means that your Arduino can act as controller.
+**N64 Controller was tested with an older API. I updated the API, but had no
+chance to test it again. Tell me if your N64 Controller works.**
 
-* Gamecube Host
-* N64 Host
+* GamecubeConsole (Device Mode)
+* GamecubeController (Host Mode)
+* N64Controller (Host Mode)
 
-#####Planned features
-* Gamecube Device(todo)
-* N64 Device(todo, I don't have any)
+##### Planned features
+* N64Console (todo, don't have any)
 * Wii-Mote (USB Host shield)
 * Wii Nunchuk (I2C)
 * Wii Classic Controller (I2C)
@@ -26,37 +28,39 @@ Controller mode means that your Arduino can act as controller.
 * Wiiu Pro Controller (USB Host shield)
 * SNES Controller (I don't have any)
 
-#####Todo:
+##### Todo:
 * N64 rumble -> example
 * N64 -> USB example
+* GC to N64 example
+
+##### Possible projects:
+* Gamecube HID Controller
+* Gamecube to X Adapter
+* X to Gamecube Adapter
+* Selfmade Gamecube Controller
+* Wireless Gamecube Controller
+* 2 Player merged Controller
+* Manipulated (shortcut) Gamecube Controller
+* Gamecube Controller as Arduino input
 
 Download
 ========
 
-You have 3 versions you can download:
-* The master includes all fixes to the current stable release. Download it by clicking the "Download Zip" button at the right.
-Use the [online Wiki](https://github.com/NicoHood/Nintendo/wiki) to get the newest documentation.
-* Download an offline version in [releases](https://github.com/NicoHood/Nintendo/releases).
-It's a snapshot of the current stable release but might have missed some updates that the current master branch has included.
-This also includes an offline version of the wiki. Offline versions will be available after some time when the official release is out.
-You can also find older versions with the associated documentation.
-* Select [branch 'dev'](https://github.com/NicoHood/Nintendo/tree/dev) to test the bleeding edge of this software. It might now work at all or has a lot of debugging stuff in it.
-If the dev version gets near to a new release a note will be placed here, that you can test the new dev beta.
-Currently there is no beta available.
+Download the zip, extract and remove the "-master" of the folder.
+Install the library [as described here](http://arduino.cc/en/pmwiki.php?n=Guide/Libraries).
+You can also use the Arduino Library Manager to get the latest version.
 
+Checkout the ['dev' branch](https://github.com/NicoHood/Nintendo/tree/dev) to test the bleeding edge of this software. It might now work at all or has a lot of debugging stuff in it.
 
 Wiki
 ====
 
 All documentation moved to the [wiki page](https://github.com/NicoHood/Nintendo/wiki).
 
-An offline snapshot is available in [releases](https://github.com/NicoHood/Nintendo/releases).
-
-
 Contact
 =======
 
-You can contact me on my wordpress blog in the contact section.
+Contact information can be found here:
 
 www.nicohood.de
 
@@ -64,11 +68,14 @@ www.nicohood.de
 Version History
 ===============
 ```
-1.2 Release (xx.xx.2015)
-* Added N64 Host support
+1.2 Release (19.07.2016)
+* Reworked library structure
+* Added N64Controller support
+* Added GamecubeConsole support
 * Separated consoles
 * Added library.properties
 * Added version identifier
+* Untabified all source files
 
 1.1 Release (14.02.2015)
 * Changes in the Gamecube Code:
