@@ -52,6 +52,7 @@ public:
     inline Gamecube_Origin_t getOrigin(void);
     inline Gamecube_Report_t getReport(void);
     inline Gamecube_Data_t getData(void);
+    // TODO add a calibrate with origin function
 
 protected:
     const uint8_t pin;

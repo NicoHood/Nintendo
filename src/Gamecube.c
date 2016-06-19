@@ -65,7 +65,7 @@ bool gc_read(const uint8_t pin, Gamecube_Report_t* report, const bool rumble)
     // Command to send to the gamecube, LSB is rumble
     uint8_t command[] = { 0x40, 0x03, rumble };
 
-    // Rend the command and read in data
+    // Send the command and read in data
     uint8_t receivedBytes = gc_n64_send_get(pin, command, sizeof(command), (uint8_t*)report, sizeof(Gamecube_Report_t));
 
     // Return status information for optional use.

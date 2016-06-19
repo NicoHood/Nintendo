@@ -104,8 +104,6 @@ bool CGamecubeController::read(void)
         return false;
     }
 
-    // TODO merge with origin values
-
     // Return status information for optional use.
     // On error the report may have been modified!
     return true;

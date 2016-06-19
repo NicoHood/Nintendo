@@ -68,7 +68,7 @@ void print_gc_report(Gamecube_Report_t &gc_report, Gamecube_Status_t &gc_status)
   Serial.print(F("Device: "));
   switch (gc_status.device) {
     case NINTENDO_DEVICE_GC_NONE:
-      Serial.println(F("No Gamecube Controller Found!"));
+      Serial.println(F("No Gamecube Controller found!"));
       break;
     case NINTENDO_DEVICE_GC_WIRED:
       Serial.println(F("Original Nintendo Gamecube Controller"));
