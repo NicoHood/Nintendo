@@ -1,5 +1,5 @@
-Arduino Nintendo Library 1.2
-============================
+Arduino Nintendo Library 1.2.1
+==============================
 
 ![header](header.jpg)
 
@@ -68,6 +68,9 @@ www.nicohood.de
 Version History
 ===============
 ```
+1.2.1 Release (27.01.2017)
+* Fix compiling of assembler functions
+
 1.2 Release (19.07.2016)
 * Reworked library structure
 * Added N64Controller support
