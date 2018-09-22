@@ -7,7 +7,7 @@ This library is made to connect Nintendo Controllers to your Arduino very easy.
 Make sure you grab the right hardware, tear off some cables to use your controllers
 on your PC for example. The requirement are written in each library readme part.
 
-**IDE 1.6 compatible!**
+<a href="https://www.buymeacoffee.com/Mnwg9NrCK" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
 
 ##### Supported devices
 Host mode means that you can hook up an controller to your Arduino and read its buttons.
