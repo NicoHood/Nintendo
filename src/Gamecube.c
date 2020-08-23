@@ -99,20 +99,20 @@ uint8_t gc_write(const uint8_t pin, Gamecube_Status_t* status, Gamecube_Origin_t
     uint8_t command[3] = {0,0,0}; // TODO do not init
     uint8_t receivedBytes = gc_n64_get(command, sizeof(command), modePort, outPort, inPort, bitMask);
 
-    // Init
-    if (receivedBytes == 1 && command[0] == 0x00)
+    // Init or reset
+    if (receivedBytes == 1 && (command[0] == 0x00 || command[0] == 0xFF))
     {
         gc_n64_send(status->raw8, sizeof(Gamecube_Status_t), modePort, outPort, bitMask);
         ret = 1;
     }
-    // Get origin
-    else if (receivedBytes == 1 && command[0] == 0x41)
+    // Get origin or recalibrate.
+    else if (receivedBytes == 1 && (command[0] == 0x41 || command[0] == 0x42))
     {
         gc_n64_send(origin->raw8, sizeof(Gamecube_Origin_t), modePort, outPort, bitMask);
         ret = 2;
     }
     // Get data. Do not check last byte (command[2]), as the flags are unknown
-    else if (receivedBytes == 3 && command[0] == 0x40 && command[1] == 0x03)
+    else if (receivedBytes == 3 && command[0] == 0x40 && (command[1] == 0x03 || command[1] == 0x04))
     {
         gc_n64_send(report->raw8, sizeof(Gamecube_Report_t), modePort, outPort, bitMask);
         ret = 3;
@@ -130,6 +130,7 @@ uint8_t gc_write(const uint8_t pin, Gamecube_Status_t* status, Gamecube_Origin_t
         // 0x01 First 4 bytes: buttons0+1 + X + Y, C-Stick Horizontal only, R, L, 0x00 fixed
         // 0x02 First 4 bytes: buttons0+1 + X + Y, C-Stick Horizontal only, L+R minimum of both, 0x02 fixed, 0x01 fixed
         // 0x03 Normal reading
+        // 0x04 First 4 bytes: buttons0+1 + X + Y, 0x00 fixed, C-Stick, Analog A/B
 
         // I've seen 3 last options for the last byte (command[2]):
         // 0x00 Normal reading
@@ -147,9 +148,9 @@ uint8_t gc_write(const uint8_t pin, Gamecube_Status_t* status, Gamecube_Origin_t
         }
         else if((command[2] % 4) == 0x03){
             ret = 6;
-        }
+        }        
     }
-
+    
     // End of time sensitive code
     SREG = oldSREG;
 
