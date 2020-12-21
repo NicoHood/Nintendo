@@ -43,7 +43,7 @@ void CN64Controller::reset(void)
 bool CN64Controller::begin(void)
 {
     // Try to init the controller
-    if (!gc_init(pin, &status))
+    if (!n64_init(pin, &status))
     {
         // Reset in any case, as some bytes may have been written.
         reset();
