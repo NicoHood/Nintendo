@@ -17,10 +17,10 @@ chance to test it again. Tell me if your N64 Controller works.**
 
 * GamecubeConsole (Device Mode)
 * GamecubeController (Host Mode)
+* N64Console (Device Mode)
 * N64Controller (Host Mode)
 
 ##### Planned features
-* N64Console (todo, don't have any)
 * Wii-Mote (USB Host shield)
 * Wii Nunchuk (I2C)
 * Wii Classic Controller (I2C)
