@@ -24,6 +24,8 @@ THE SOFTWARE.
 // Include guard
 #pragma once
 
+#include "N64API.h"
+
 //================================================================================
 // N64 Controller API
 //================================================================================
@@ -154,4 +156,55 @@ N64_Data_t CN64Controller::getData(void)
 // N64 Console API
 //================================================================================
 
-// TODO
+CN64Console::CN64Console(const uint8_t p) : pin(p){
+    // Empty
+}
+
+
+bool CN64Console::write(N64_Data_t &data)
+{
+    // Abort if controller was not initialized.
+    // N64 will refuse and weird connect/disconnect errors will occur.
+    //if (data.report.origin) {
+        //return false;
+    //}
+
+    // Don't want interrupts getting in the way
+    uint8_t oldSREG = SREG;
+    cli();
+
+    // Write a respond to the N64, depending on what it requests
+    uint8_t ret = n64_write(pin, &data.status, &data.report);
+
+    // Init
+    if(ret == 1)
+    {
+        // Try to answer a following read request
+        ret = n64_write(pin, &data.status, &data.report);
+    }
+
+    // End of time sensitive code
+    SREG = oldSREG;
+
+    // Return error if no reading was possible
+    return false;
+}
+
+
+bool CN64Console::write(CN64Controller &controller)
+{
+    // Cast controller to its protected (friend) data
+    N64_Data_t& data = controller;
+    return write(data);
+}
+
+
+bool CN64Console::write(N64_Report_t &report)
+{
+    // Inititalize status and report with default values
+    N64_Data_t data = defaultN64Data;
+
+    // Copy report into the temporary struct and write to N64
+    memcpy(&data.report, &report, sizeof(data.report));
+    return write(data);
+}
