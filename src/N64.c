@@ -79,7 +79,7 @@ uint8_t n64_write(const uint8_t pin, N64_Status_t* status, N64_Report_t* report)
 
     // Read in data from the console
     // After receiving the init command you have max 20ms to respond (for the data command)!
-    uint8_t command[3] = {0, 0, 0};
+    uint8_t command[3];
     uint8_t receivedBytes = gc_n64_get(command, sizeof(command), modePort, outPort, inPort, bitMask);
 
     // Identify
