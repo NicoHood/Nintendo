@@ -163,12 +163,6 @@ CN64Console::CN64Console(const uint8_t p) : pin(p){
 
 bool CN64Console::write(N64_Data_t &data)
 {
-    // Abort if controller was not initialized.
-    // N64 will refuse and weird connect/disconnect errors will occur.
-    //if (data.report.origin) {
-        //return false;
-    //}
-
     // Don't want interrupts getting in the way
     uint8_t oldSREG = SREG;
     cli();
