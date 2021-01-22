@@ -104,6 +104,7 @@ extern "C" {
 // Functions to communicate with the gc controller
 bool n64_init(const uint8_t pin, N64_Status_t* status);
 bool n64_read(const uint8_t pin, N64_Report_t* report);
+uint8_t n64_write(const uint8_t pin, N64_Status_t* status, N64_Report_t* report);
 
 #ifdef __cplusplus
 }

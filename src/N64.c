@@ -60,4 +60,43 @@ bool n64_read(const uint8_t pin, N64_Report_t* report)
 // N64 Console
 //================================================================================
 
-// TODO
+uint8_t n64_write(const uint8_t pin, N64_Status_t* status, N64_Report_t* report)
+{
+    // 0 = no input/error, 1 = identify, 2 = status (poll),
+    // 3 = read from expansion bus, 4 = write to expansion bus
+    uint8_t ret = 0;
+
+    // Get the port mask and the pointers to the in/out/mode registers
+    uint8_t bitMask = digitalPinToBitMask(pin);
+    uint8_t port = digitalPinToPort(pin);
+    volatile uint8_t* modePort = portModeRegister(port);
+    volatile uint8_t* outPort = portOutputRegister(port);
+    volatile uint8_t* inPort = portInputRegister(port);
+
+    // Don't want interrupts getting in the way
+    uint8_t oldSREG = SREG;
+    cli();
+
+    // Read in data from the console
+    // After receiving the init command you have max 20ms to respond (for the data command)!
+    uint8_t command[3];
+    uint8_t receivedBytes = gc_n64_get(command, sizeof(command), modePort, outPort, inPort, bitMask);
+
+    // Identify
+    if (receivedBytes == 1 && command[0] == 0x00)
+    {
+        gc_n64_send(status->raw8, sizeof(N64_Status_t), modePort, outPort, bitMask);
+        ret = 1;
+    }
+    // Poll
+    else if (receivedBytes == 1 && command[0] == 0x01)
+    {
+        gc_n64_send(report->raw8, sizeof(N64_Report_t), modePort, outPort, bitMask);
+        ret = 2;
+    }
+
+    // End of time sensitive code
+    SREG = oldSREG;
+
+    return ret;
+}

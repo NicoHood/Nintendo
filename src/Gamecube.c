@@ -96,7 +96,7 @@ uint8_t gc_write(const uint8_t pin, Gamecube_Status_t* status, Gamecube_Origin_t
 
     // Read in data from the console
     // After receiving the init command you have max 80us to respond (for the data command)!
-    uint8_t command[3] = {0,0,0}; // TODO do not init
+    uint8_t command[3];
     uint8_t receivedBytes = gc_n64_get(command, sizeof(command), modePort, outPort, inPort, bitMask);
 
     // Init

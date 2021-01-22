@@ -27,11 +27,10 @@ THE SOFTWARE.
 #include "N64.h"
 
 // Default data for an original, initialized, centered N64 controller
-// TODO
-// static constexpr N64_Data_t defaultN64Data = {
-//     .status = { 0x05, 0x00, ??? },
-//     .report = { ??? }
-// };
+static constexpr N64_Data_t defaultN64Data = {
+    .status = { 0x05, 0x00, 0x02 },
+    .report = { 0x00, 0x00, 0x00, 0x00 }
+};
 
 //================================================================================
 // N64 Controller API
@@ -62,16 +61,15 @@ protected:
 // N64 Host API
 //================================================================================
 
-// TODO
-// class CN64Console{
-// public:
-//     inline CN64Console(const uint8_t p);
-//     inline bool write(N64_Data_t &data);
-//     inline bool write(CN64Controller &controller);
-//     inline bool write(N64_Report_t &report);
-//
-// protected:
-//     const uint8_t pin;
-// };
+class CN64Console{
+public:
+    inline CN64Console(const uint8_t p);
+    inline bool write(N64_Data_t &data);
+    inline bool write(CN64Controller &controller);
+    inline bool write(N64_Report_t &report);
+
+protected:
+    const uint8_t pin;
+};
 
 #include "N64API.hpp"
