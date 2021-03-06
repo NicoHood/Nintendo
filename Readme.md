@@ -1,4 +1,4 @@
-Arduino Nintendo Library 1.3.0
+Arduino Nintendo Library 1.3.1
 ==============================
 
 ![header](header.jpg)

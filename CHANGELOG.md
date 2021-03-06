@@ -7,6 +7,12 @@ This changlog uses the [ISO 8601 date format](https://www.iso.org/iso-8601-date-
 
 ## [Unreleased]
 
+## [1.3.1] - 2021-03-06
+
+### Fixed
+
+* Fix [#22](https://github.com/NicoHood/Nintendo/issues/22) add delay between begin() and read() for N64 controller
+
 ## [1.3.0] - 2021-01-22
 
 ### Added
@@ -64,7 +70,8 @@ This changlog uses the [ISO 8601 date format](https://www.iso.org/iso-8601-date-
 * Added Gamecube Device support
 
 
-[Unreleased]: https://github.com/NicoHood/Nintendo/compare/1.3.0...HEAD
+[Unreleased]: https://github.com/NicoHood/Nintendo/compare/1.3.1...HEAD
+[1.3.1]: https://github.com/NicoHood/Nintendo/compare/1.3.0...1.3.1
 [1.3.0]: https://github.com/NicoHood/Nintendo/compare/1.2.1...1.3.0
 [1.2.1]: https://github.com/NicoHood/Nintendo/releases/tag/1.2.1
 [1.1]: https://github.com/NicoHood/Nintendo/compare/1.0...1.1
