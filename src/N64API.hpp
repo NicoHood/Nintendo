@@ -50,6 +50,9 @@ bool CN64Controller::begin(void)
         return false;
     }
 
+    // A small delay is required between begin() and read()
+    delayMicroseconds(100);
+
     // No error
     return true;
 }
