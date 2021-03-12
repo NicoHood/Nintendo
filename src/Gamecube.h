@@ -57,6 +57,12 @@ typedef union{
         };
     };
 
+    // NOTE:
+    // This only represents reading mode 3!
+    // If you are using a different reading mode, make sure to arrange the data
+    // accordingly yourself. Pullrequests with different layouts via unions are welcome.
+    // More information about different reading modes can be found in the dolphin source:
+    // https://github.com/dolphin-emu/dolphin/blob/master/Source/Core/Core/HW/SI/SI_DeviceGCController.cpp#L167
     struct {
         // first data byte (bitfields are sorted in LSB order)
         uint8_t a : 1;
