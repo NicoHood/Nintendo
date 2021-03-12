@@ -99,21 +99,31 @@ uint8_t gc_write(const uint8_t pin, Gamecube_Status_t* status, Gamecube_Origin_t
     uint8_t command[3];
     uint8_t receivedBytes = gc_n64_get(command, sizeof(command), modePort, outPort, inPort, bitMask);
 
-    // Init
-    if (receivedBytes == 1 && command[0] == 0x00)
+    // Init or reset
+    if (receivedBytes == 1 && (command[0] == 0x00 || command[0] == 0xFF))
     {
         gc_n64_send(status->raw8, sizeof(Gamecube_Status_t), modePort, outPort, bitMask);
         ret = 1;
     }
-    // Get origin
-    else if (receivedBytes == 1 && command[0] == 0x41)
+    // Get origin or recalibrate
+    else if (receivedBytes == 1 && (command[0] == 0x41 || command[0] == 0x42))
     {
         gc_n64_send(origin->raw8, sizeof(Gamecube_Origin_t), modePort, outPort, bitMask);
         ret = 2;
     }
     // Get data. Do not check last byte (command[2]), as the flags are unknown
-    else if (receivedBytes == 3 && command[0] == 0x40 && command[1] == 0x03)
+    else if (receivedBytes == 3 && command[0] == 0x40 && command[1] <= 0x07)
     {
+        // NOTE: There are several reading modes (command[1]), of which we mainly use mode 3.
+        // The current struct definition (Gamecube_Report_t) only represents mode 3.
+        // If a game uses a different mode, you need to arrange the data in the report accordingly.
+        // This can be done by adding additional definitions as a union to the struct.
+        // If you are simply reading a real controller and mirroring that data to the console,
+        // you should be fine. If you only modify the button or x/y axis values you are mostly safe.
+        // If you experience any errors, please let me know. A detailed documentation of possible modes
+        // Can be found here:
+        // https://github.com/dolphin-emu/dolphin/blob/master/Source/Core/Core/HW/SI/SI_DeviceGCController.cpp#L167
+
         gc_n64_send(report->raw8, sizeof(Gamecube_Report_t), modePort, outPort, bitMask);
         ret = 3;
         // The first byte probably flags a gamecube reading (0x40), as the same
