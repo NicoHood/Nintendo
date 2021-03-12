@@ -121,7 +121,7 @@ uint8_t gc_write(const uint8_t pin, Gamecube_Status_t* status, Gamecube_Origin_t
         // If you are simply reading a real controller and mirroring that data to the console,
         // you should be fine. If you only modify the button or x/y axis values you are mostly safe.
         // If you experience any errors, please let me know. A detailed documentation of possible modes
-        // Can be found here:
+        // can be found here:
         // https://github.com/dolphin-emu/dolphin/blob/master/Source/Core/Core/HW/SI/SI_DeviceGCController.cpp#L167
 
         gc_n64_send(report->raw8, sizeof(Gamecube_Report_t), modePort, outPort, bitMask);
