@@ -130,7 +130,7 @@ typedef union{
         uint8_t cyAxis;
         uint8_t left;
         uint8_t right;
-    };
+    }; // mode3 (default reading mode)
 
     struct {
         // first data byte (bitfields are sorted in LSB order)
@@ -166,7 +166,7 @@ typedef union{
         uint8_t right : 4;
         uint8_t analogA : 4;
         uint8_t analogB : 4;
-    } Mode0;
+    } mode0;
 
     struct {
         // first data byte (bitfields are sorted in LSB order)
@@ -198,7 +198,7 @@ typedef union{
         uint8_t right;
         uint8_t analogA : 4;
         uint8_t analogB : 4;
-    } Mode1;
+    } mode1;
 
     struct {
         // first data byte (bitfields are sorted in LSB order)
@@ -230,7 +230,7 @@ typedef union{
         uint8_t right : 4;
         uint8_t analogA;
         uint8_t analogB;
-    } Mode2;
+    } mode2;
 
     struct {
         // first data byte (bitfields are sorted in LSB order)
@@ -260,7 +260,7 @@ typedef union{
         uint8_t cyAxis;
         uint8_t analogA;
         uint8_t analogB;
-    } Mode4;
+    } mode4;
 } Gamecube_Different_Report_t;
 
 // Gamecube an N64 use the same status schema
