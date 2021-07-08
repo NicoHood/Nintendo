@@ -78,6 +78,58 @@ bool gc_read(const uint8_t pin, Gamecube_Report_t* report, const bool rumble)
 // Gamecube Console
 //================================================================================
 
+void gc_report_convert(Gamecube_Report_t* report, Gamecube_Different_Report_t* dif, uint8_t mode)
+{
+    dif->a = report->a;
+    dif->b = report->b;
+    dif->x = report->x;
+    dif->y = report->y;
+    dif->start = report->start;
+    dif->dleft = report->dleft;
+    dif->dright = report->dright;
+    dif->ddown = report->ddown;
+    dif->dup = report->dup;
+    dif->z = report->z;
+    dif->r = report->r;
+    dif->l = report->l;
+    dif->xAxis = report->xAxis;
+    dif->yAxis = report->yAxis;
+    if (mode == 0 || mode == 5 || mode == 6 || mode == 7)
+    {
+        dif->Mode0.cxAxis = report->cxAxis;
+        dif->Mode0.cyAxis = report->cyAxis;
+        dif->Mode0.left = report->left >> 4;
+        dif->Mode0.right = report->right >> 4;
+        dif->Mode0.analogA = 0;
+        dif->Mode0.analogB = 0;
+    }
+    else if (mode == 1)
+    {
+        dif->Mode1.cxAxis = report->cxAxis >> 4;
+        dif->Mode1.cyAxis = report->cyAxis >> 4;
+        dif->Mode1.left = report->left;
+        dif->Mode1.right = report->right;
+        dif->Mode1.analogA = 0;
+        dif->Mode1.analogB = 0;
+    }
+    else if (mode == 2)
+    {
+        dif->Mode2.cxAxis = report->cxAxis >> 4;
+        dif->Mode2.cyAxis = report->cyAxis >> 4;
+        dif->Mode2.left = report->left >> 4;
+        dif->Mode2.right = report->right >> 4;
+        dif->Mode2.analogA = 0;
+        dif->Mode2.analogB = 0;
+    }
+    else if (mode == 4)
+    {
+        dif->Mode4.cxAxis = report->cxAxis;
+        dif->Mode4.cyAxis = report->cyAxis;
+        dif->Mode4.analogA = 0;
+        dif->Mode4.analogB = 0;
+    }
+}
+
 uint8_t gc_write(const uint8_t pin, Gamecube_Status_t* status, Gamecube_Origin_t* origin, Gamecube_Report_t* report)
 {
     // 0 = no input/error, 1 = init, 2 = origin, 3 = read, 4 = read with rumble
@@ -112,49 +164,18 @@ uint8_t gc_write(const uint8_t pin, Gamecube_Status_t* status, Gamecube_Origin_t
         ret = 2;
     }
     // Get data. Do not check last byte (command[2]), as the flags are unknown
-    else if (receivedBytes == 3 && command[0] == 0x40 && command[1] == 0x03)
+    else if (receivedBytes == 3 && command[0] == 0x40 && command[1] <= 0x07)
     {
-        gc_n64_send(report->raw8, sizeof(Gamecube_Report_t), modePort, outPort, bitMask);
-        ret = 3;
-        // The first byte probably flags a gamecube reading (0x40), as the same
-        // protocol is also used for N64. The lower nibble seems to be the mode:
-        // 0x40 (followed by 2 bytes) reading
-        // 0x41 get origin (1 byte)
-        // 0x42 (followed by 2 bytes) seems to force mode 0x02 below
-        // 0x43 (followed by 2 bytes) seems to force mode 0x02 below
-
-        // The 2nd byte (command[1]) seems to request a special data format.
-        // I've noticed formats that merge the L + R data.
-        // There seem to be only 4 data formats, the rest is ignore.
-        // 0x00 First 4 bytes: buttons0+1 + X + Y, C-Stick, L+R minimum of both, 0x00 fixed
-        // 0x01 First 4 bytes: buttons0+1 + X + Y, C-Stick Horizontal only, R, L, 0x00 fixed
-        // 0x02 First 4 bytes: buttons0+1 + X + Y, C-Stick Horizontal only, L+R minimum of both, 0x02 fixed, 0x01 fixed
-        // 0x03 Normal reading
-
-        // I've seen 3 last options for the last byte (command[2]):
-        // 0x00 Normal reading
-        // 0x01 Enable rumble
-        // 0x02 Normal reading, rumble was at least called once
-        // 0x03 ??? - never seen so far
-        // Rumble: 1, 5, 9, 13, 17, ...
-        // You can see that only 4 of those requests are possible,
-        // the gamecube will ignore the left 6 MSB.
-        if((command[2] % 4) == 0x01){
-            ret = 4;
+        if (command[1] == 0x03)
+        {
+            gc_n64_send(report->raw8, sizeof(Gamecube_Report_t), modePort, outPort, bitMask);
+            ret = 3;
+        } else {
+            Gamecube_Different_Report_t dif;
+            gc_report_convert(report, &dif, command[1]);
+            gc_n64_send(dif.raw8, sizeof(Gamecube_Different_Report_t), modePort, outPort, bitMask);
+            ret = 3;
         }
-        else if((command[2] % 4) == 0x02){
-            ret = 5;
-        }
-        else if((command[2] % 4) == 0x03){
-            ret = 6;
-        }
-    }
-    // Add Support Pokemon Colosseum,XD
-    // Get data. Do not check last byte (command[2]), as the flags are unknown
-    else if (receivedBytes == 3 && command[0] == 0x40 && command[1] == 0x00)
-    {
-        gc_n64_send(report->raw8, sizeof(Gamecube_Report_t), modePort, outPort, bitMask);
-        ret = 3;
         // The first byte probably flags a gamecube reading (0x40), as the same
         // protocol is also used for N64. The lower nibble seems to be the mode:
         // 0x40 (followed by 2 bytes) reading
