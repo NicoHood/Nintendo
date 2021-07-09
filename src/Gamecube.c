@@ -78,33 +78,33 @@ bool gc_read(const uint8_t pin, Gamecube_Report_t* report, const bool rumble)
 // Gamecube Console
 //================================================================================
 
-void gc_report_convert(Gamecube_Report_t* report, Gamecube_Report_t* dif, uint8_t mode)
+void gc_report_convert(Gamecube_Report_t* report, Gamecube_Report_t* dest_report, uint8_t mode)
 {
-    memcpy(dif, report, sizeof(Gamecube_Report_t));
+    memcpy(dest_report, report, sizeof(Gamecube_Report_t));
     if (mode == 1)
     {
-        dif->mode1.cxAxis = report->cxAxis >> 4;
-        dif->mode1.cyAxis = report->cyAxis >> 4;
-        dif->mode1.left = report->left;
-        dif->mode1.right = report->right;
-        dif->mode1.analogA = 0;
-        dif->mode1.analogB = 0;
+        dest_report->mode1.cxAxis = report->cxAxis >> 4;
+        dest_report->mode1.cyAxis = report->cyAxis >> 4;
+        dest_report->mode1.left = report->left;
+        dest_report->mode1.right = report->right;
+        dest_report->mode1.analogA = 0;
+        dest_report->mode1.analogB = 0;
     }
     else if (mode == 2)
     {
-        dif->mode2.cxAxis = report->cxAxis >> 4;
-        dif->mode2.cyAxis = report->cyAxis >> 4;
-        dif->mode2.left = report->left >> 4;
-        dif->mode2.right = report->right >> 4;
-        dif->mode2.analogA = 0;
-        dif->mode2.analogB = 0;
+        dest_report->mode2.cxAxis = report->cxAxis >> 4;
+        dest_report->mode2.cyAxis = report->cyAxis >> 4;
+        dest_report->mode2.left = report->left >> 4;
+        dest_report->mode2.right = report->right >> 4;
+        dest_report->mode2.analogA = 0;
+        dest_report->mode2.analogB = 0;
     }
     else if (mode == 4)
     {
-        dif->mode4.cxAxis = report->cxAxis;
-        dif->mode4.cyAxis = report->cyAxis;
-        dif->mode4.analogA = 0;
-        dif->mode4.analogB = 0;
+        dest_report->mode4.cxAxis = report->cxAxis;
+        dest_report->mode4.cyAxis = report->cyAxis;
+        dest_report->mode4.analogA = 0;
+        dest_report->mode4.analogB = 0;
     }
     else if (mode == 3)
     {
@@ -112,12 +112,12 @@ void gc_report_convert(Gamecube_Report_t* report, Gamecube_Report_t* dif, uint8_
     }
     else
     {
-        dif->mode0.cxAxis = report->cxAxis;
-        dif->mode0.cyAxis = report->cyAxis;
-        dif->mode0.left = report->left >> 4;
-        dif->mode0.right = report->right >> 4;
-        dif->mode0.analogA = 0;
-        dif->mode0.analogB = 0;
+        dest_report->mode0.cxAxis = report->cxAxis;
+        dest_report->mode0.cyAxis = report->cyAxis;
+        dest_report->mode0.left = report->left >> 4;
+        dest_report->mode0.right = report->right >> 4;
+        dest_report->mode0.analogA = 0;
+        dest_report->mode0.analogB = 0;
     }
 }
 
@@ -157,9 +157,9 @@ uint8_t gc_write(const uint8_t pin, Gamecube_Status_t* status, Gamecube_Origin_t
     // Get data. Do not check last byte (command[2]), as the flags are unknown
     else if (receivedBytes == 3 && command[0] == 0x40 && command[1] <= 0x07)
     {
-        Gamecube_Report_t dif;
-        gc_report_convert(report, &dif, command[1]);
-        gc_n64_send(dif.raw8, sizeof(dif), modePort, outPort, bitMask);
+        Gamecube_Report_t dest_report;
+        gc_report_convert(report, &dest_report, command[1]);
+        gc_n64_send(dest_report.raw8, sizeof(dest_report), modePort, outPort, bitMask);
         ret = 3;
         // The first byte probably flags a gamecube reading (0x40), as the same
         // protocol is also used for N64. The lower nibble seems to be the mode:
