@@ -80,7 +80,7 @@ bool gc_read(const uint8_t pin, Gamecube_Report_t* report, const bool rumble)
 
 void gc_report_convert(Gamecube_Report_t* report, Gamecube_Different_Report_t* dif, uint8_t mode)
 {
-    memcpy(dif->raw8, report->raw8, 4);
+    memcpy(dif, report, sizeof(dif));
     if (mode == 1)
     {
         dif->mode1.cxAxis = report->cxAxis >> 4;
@@ -105,6 +105,10 @@ void gc_report_convert(Gamecube_Report_t* report, Gamecube_Different_Report_t* d
         dif->mode4.cyAxis = report->cyAxis;
         dif->mode4.analogA = 0;
         dif->mode4.analogB = 0;
+    }
+    else if (mode == 3)
+    {
+        return;
     }
     else
     {
@@ -153,16 +157,10 @@ uint8_t gc_write(const uint8_t pin, Gamecube_Status_t* status, Gamecube_Origin_t
     // Get data. Do not check last byte (command[2]), as the flags are unknown
     else if (receivedBytes == 3 && command[0] == 0x40 && command[1] <= 0x07)
     {
-        if (command[1] == 0x03)
-        {
-            gc_n64_send(report->raw8, sizeof(Gamecube_Report_t), modePort, outPort, bitMask);
-            ret = 3;
-        } else {
-            Gamecube_Different_Report_t dif;
-            gc_report_convert(report, &dif, command[1]);
-            gc_n64_send(dif.raw8, sizeof(Gamecube_Different_Report_t), modePort, outPort, bitMask);
-            ret = 3;
-        }
+        Gamecube_Different_Report_t dif;
+        gc_report_convert(report, &dif, command[1]);
+        gc_n64_send(dif.raw8, sizeof(Gamecube_Different_Report_t), modePort, outPort, bitMask);
+        ret = 3;
         // The first byte probably flags a gamecube reading (0x40), as the same
         // protocol is also used for N64. The lower nibble seems to be the mode:
         // 0x40 (followed by 2 bytes) reading
