@@ -78,9 +78,9 @@ bool gc_read(const uint8_t pin, Gamecube_Report_t* report, const bool rumble)
 // Gamecube Console
 //================================================================================
 
-void gc_report_convert(Gamecube_Report_t* report, Gamecube_Different_Report_t* dif, uint8_t mode)
+void gc_report_convert(Gamecube_Report_t* report, Gamecube_Report_t* dif, uint8_t mode)
 {
-    memcpy(dif, report, sizeof(dif));
+    memcpy(dif, report, sizeof(Gamecube_Report_t));
     if (mode == 1)
     {
         dif->mode1.cxAxis = report->cxAxis >> 4;
@@ -157,9 +157,9 @@ uint8_t gc_write(const uint8_t pin, Gamecube_Status_t* status, Gamecube_Origin_t
     // Get data. Do not check last byte (command[2]), as the flags are unknown
     else if (receivedBytes == 3 && command[0] == 0x40 && command[1] <= 0x07)
     {
-        Gamecube_Different_Report_t dif;
+        Gamecube_Report_t dif;
         gc_report_convert(report, &dif, command[1]);
-        gc_n64_send(dif.raw8, sizeof(Gamecube_Different_Report_t), modePort, outPort, bitMask);
+        gc_n64_send(dif.raw8, sizeof(dif), modePort, outPort, bitMask);
         ret = 3;
         // The first byte probably flags a gamecube reading (0x40), as the same
         // protocol is also used for N64. The lower nibble seems to be the mode:
