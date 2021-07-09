@@ -78,6 +78,9 @@ bool gc_read(const uint8_t pin, Gamecube_Report_t* report, const bool rumble)
 // Gamecube Console
 //================================================================================
 
+// This function converts a report from reading mode 3 (default) to a specified target mode.
+// Details of the different reading modes can be found here:
+// https://github.com/dolphin-emu/dolphin/blob/master/Source/Core/Core/HW/SI/SI_DeviceGCController.cpp#L167
 void gc_report_convert(Gamecube_Report_t* report, Gamecube_Report_t* dest_report, uint8_t mode)
 {
     memcpy(dest_report, report, sizeof(Gamecube_Report_t));
@@ -110,6 +113,7 @@ void gc_report_convert(Gamecube_Report_t* report, Gamecube_Report_t* dest_report
     {
         return;
     }
+    // Mode 0, 5, 6, 7
     else
     {
         dest_report->mode0.cxAxis = report->cxAxis;
