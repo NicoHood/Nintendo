@@ -166,7 +166,7 @@ Serial.println(n % 3);
 #define nopn96 nopn0
 #define nopn97 nopn1
 #define nopn98 nopn2
-#define nopn99 nopn0
+#define nopn99 nopn0
 #define nop_reg "%[nop]" // in this sketch we named the register like this
 #define nop_block(id, N) /* nops have to be >=3 in order to work*/ \
 "ldi " nop_reg ", (" #N "/3)\n" /* (1) ldi, start */ \
