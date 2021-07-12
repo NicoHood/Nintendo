@@ -78,6 +78,54 @@ bool gc_read(const uint8_t pin, Gamecube_Report_t* report, const bool rumble)
 // Gamecube Console
 //================================================================================
 
+// This function converts a report from reading mode 3 (default) to a specified target mode.
+// Details of the different reading modes can be found here:
+// https://github.com/dolphin-emu/dolphin/blob/master/Source/Core/Core/HW/SI/SI_DeviceGCController.cpp#L167
+// Mode 0 was tested with Pokemon XD
+void gc_report_convert(Gamecube_Report_t* report, Gamecube_Report_t* dest_report, uint8_t mode)
+{
+    memcpy(dest_report, report, sizeof(Gamecube_Report_t));
+    if (mode == 1)
+    {
+        dest_report->mode1.cxAxis = report->cxAxis >> 4;
+        dest_report->mode1.cyAxis = report->cyAxis >> 4;
+        dest_report->mode1.left = report->left;
+        dest_report->mode1.right = report->right;
+        dest_report->mode1.analogA = 0;
+        dest_report->mode1.analogB = 0;
+    }
+    else if (mode == 2)
+    {
+        dest_report->mode2.cxAxis = report->cxAxis >> 4;
+        dest_report->mode2.cyAxis = report->cyAxis >> 4;
+        dest_report->mode2.left = report->left >> 4;
+        dest_report->mode2.right = report->right >> 4;
+        dest_report->mode2.analogA = 0;
+        dest_report->mode2.analogB = 0;
+    }
+    else if (mode == 4)
+    {
+        dest_report->mode4.cxAxis = report->cxAxis;
+        dest_report->mode4.cyAxis = report->cyAxis;
+        dest_report->mode4.analogA = 0;
+        dest_report->mode4.analogB = 0;
+    }
+    else if (mode == 3)
+    {
+        return;
+    }
+    // Mode 0, 5, 6, 7
+    else
+    {
+        dest_report->mode0.cxAxis = report->cxAxis;
+        dest_report->mode0.cyAxis = report->cyAxis;
+        dest_report->mode0.left = report->left >> 4;
+        dest_report->mode0.right = report->right >> 4;
+        dest_report->mode0.analogA = 0;
+        dest_report->mode0.analogB = 0;
+    }
+}
+
 uint8_t gc_write(const uint8_t pin, Gamecube_Status_t* status, Gamecube_Origin_t* origin, Gamecube_Report_t* report)
 {
     // 0 = no input/error, 1 = init, 2 = origin, 3 = read, 4 = read with rumble
@@ -99,22 +147,24 @@ uint8_t gc_write(const uint8_t pin, Gamecube_Status_t* status, Gamecube_Origin_t
     uint8_t command[3];
     uint8_t receivedBytes = gc_n64_get(command, sizeof(command), modePort, outPort, inPort, bitMask);
 
-    // Init
-    if (receivedBytes == 1 && command[0] == 0x00)
+    // Init or reset
+    if (receivedBytes == 1 && (command[0] == 0x00 || command[0] == 0xFF))
     {
         gc_n64_send(status->raw8, sizeof(Gamecube_Status_t), modePort, outPort, bitMask);
         ret = 1;
     }
-    // Get origin
-    else if (receivedBytes == 1 && command[0] == 0x41)
+    // Get origin or recalibrate
+    else if (receivedBytes == 1 && (command[0] == 0x41 || command[0] == 0x42))
     {
         gc_n64_send(origin->raw8, sizeof(Gamecube_Origin_t), modePort, outPort, bitMask);
         ret = 2;
     }
     // Get data. Do not check last byte (command[2]), as the flags are unknown
-    else if (receivedBytes == 3 && command[0] == 0x40 && command[1] == 0x03)
+    else if (receivedBytes == 3 && command[0] == 0x40 && command[1] <= 0x07)
     {
-        gc_n64_send(report->raw8, sizeof(Gamecube_Report_t), modePort, outPort, bitMask);
+        Gamecube_Report_t dest_report;
+        gc_report_convert(report, &dest_report, command[1]);
+        gc_n64_send(dest_report.raw8, sizeof(dest_report), modePort, outPort, bitMask);
         ret = 3;
         // The first byte probably flags a gamecube reading (0x40), as the same
         // protocol is also used for N64. The lower nibble seems to be the mode:
