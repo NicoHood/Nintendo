@@ -36,6 +36,7 @@ THE SOFTWARE.
 // You need to switch the bytes for the docs which are widely available online.
 // A default Gamecube controller would look like 0x0900.
 #define NINTENDO_DEVICE_GC_WIRED     0x0009
+#define NINTENDO_DEVICE_GC_WHEEL     0x0008
 #define NINTENDO_DEVICE_GC_NONE      0x0000
 
 
@@ -261,6 +262,7 @@ extern "C" {
 bool gc_init(const uint8_t pin, Gamecube_Status_t* status);
 bool gc_origin(const uint8_t pin, Gamecube_Origin_t* origin);
 bool gc_read(const uint8_t pin, Gamecube_Report_t* report, const bool rumble);
+bool gc_read_wheel(const uint8_t pin, Gamecube_Report_t* report, const int8_t force);
 uint8_t gc_write(const uint8_t pin, Gamecube_Status_t* status, Gamecube_Origin_t* origin, Gamecube_Report_t* report);
 
 #ifdef __cplusplus
