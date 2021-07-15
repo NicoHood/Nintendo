@@ -5,7 +5,7 @@ Arduino Nintendo Library
 
 This library is made to connect Nintendo Controllers to your Arduino very easy.
 Make sure you grab the right hardware, tear off some cables to use your controllers
-on your PC for example. The requirement are written in each library readme part.
+on your PC for example. The requirements are written in the [wiki](https://github.com/NicoHood/Nintendo/wiki).
 
 <a href="https://www.buymeacoffee.com/nicohood" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
 
