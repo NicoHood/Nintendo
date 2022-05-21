@@ -36,6 +36,7 @@ THE SOFTWARE.
 // You need to switch the bytes for the docs which are widely available online.
 // A default Gamecube controller would look like 0x0900.
 #define NINTENDO_DEVICE_GC_WIRED     0x0009
+#define NINTENDO_DEVICE_GC_KEYBOARD  0x2008
 #define NINTENDO_DEVICE_GC_NONE      0x0000
 
 
@@ -217,6 +218,22 @@ typedef union{
         uint8_t analogB;
     } mode4;
 
+    struct {
+        // first data byte (bitfields are sorted in LSB order)
+        uint8_t unkwn_counter1 : 4;
+        uint8_t unkwn1 : 2;
+        uint8_t errlatch : 1;
+        uint8_t errstat : 1;
+
+        uint16_t unkwn2 : 16;
+        uint8_t  unkwn3;
+
+        uint8_t keypress[3];
+
+        uint8_t unkwn_counter2 : 4;
+        uint8_t unkwn4 : 4;
+    } keyboard;
+
 } Gamecube_Report_t;
 
 // Gamecube an N64 use the same status schema
@@ -261,6 +278,7 @@ extern "C" {
 bool gc_init(const uint8_t pin, Gamecube_Status_t* status);
 bool gc_origin(const uint8_t pin, Gamecube_Origin_t* origin);
 bool gc_read(const uint8_t pin, Gamecube_Report_t* report, const bool rumble);
+bool gc_read_keyboard(const uint8_t pin, Gamecube_Report_t* report);
 uint8_t gc_write(const uint8_t pin, Gamecube_Status_t* status, Gamecube_Origin_t* origin, Gamecube_Report_t* report);
 
 #ifdef __cplusplus
