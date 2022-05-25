@@ -220,18 +220,18 @@ typedef union{
 
     struct {
         // first data byte (bitfields are sorted in LSB order)
-        uint8_t unkwn_counter1 : 4;
-        uint8_t unkwn1 : 2;
+        uint8_t unknown_counter1 : 4;
+        uint8_t unknown1 : 2;
         uint8_t errlatch : 1;
         uint8_t errstat : 1;
 
-        uint16_t unkwn2 : 16;
-        uint8_t  unkwn3;
+        uint16_t unknown2 : 16;
+        uint8_t  unknown3;
 
         uint8_t keypress[3];
 
-        uint8_t unkwn_counter2 : 4;
-        uint8_t unkwn4 : 4;
+        uint8_t unknown_counter2 : 4;
+        uint8_t unknown4 : 4;
     } keyboard;
 
 } Gamecube_Report_t;
