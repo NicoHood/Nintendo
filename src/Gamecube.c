@@ -62,8 +62,21 @@ bool gc_origin(const uint8_t pin, Gamecube_Origin_t* origin)
 
 bool gc_read(const uint8_t pin, Gamecube_Report_t* report, const bool rumble)
 {
-    // Command to send to the gamecube, LSB is rumble
+    // Command to send to the gamecube controller, LSB is rumble
     uint8_t command[] = { 0x40, 0x03, rumble };
+
+    // Send the command and read in data
+    uint8_t receivedBytes = gc_n64_send_get(pin, command, sizeof(command), (uint8_t*)report, sizeof(Gamecube_Report_t));
+
+    // Return status information for optional use.
+    // On error the report may have been modified!
+    return (receivedBytes == sizeof(Gamecube_Report_t));
+}
+
+bool gc_read_keyboard(const uint8_t pin, Gamecube_Report_t* report)
+{
+    // Command to send to the gamecube keyboard
+    uint8_t command[] = { 0x54, 0x00, 0x00 };
 
     // Send the command and read in data
     uint8_t receivedBytes = gc_n64_send_get(pin, command, sizeof(command), (uint8_t*)report, sizeof(Gamecube_Report_t));
