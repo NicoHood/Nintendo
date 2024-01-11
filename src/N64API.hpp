@@ -50,6 +50,26 @@ bool CN64Controller::begin(void)
         return false;
     }
 
+    // From https://sites.google.com/site/consoleprotocols/home/nintendo-joy-bus-documentation
+    // 0x01 Something is plugged into the port under the standard controller
+    // 0x02 Nothing is plugged into the port under the standard controller
+    // 0x04 Controller Read/Write CRC had an error.
+
+    // Something is connected on the expansion port. Lets assume that it's a rumble pak.
+    if (status.status0 == 0x01) {
+        // Initialize rumble pak
+        // Rumble code from:
+        // https://github.com/DavidPagels/retro-pico-switch/blob/master/src/otherController/n64/N64Controller.cpp
+        delayMicroseconds(100);
+        n64_writeRumble(pin, 0xee);
+
+        delayMicroseconds(100);
+        n64_writeRumble(pin, 0x80);
+
+        delayMicroseconds(100);
+        n64_setRumble(pin, false);
+    }
+    
     // A small delay is required between begin() and read()
     delayMicroseconds(100);
 
@@ -84,6 +104,16 @@ bool CN64Controller::read(void)
         }
     }
 
+    //Need to enable/disable rumble?
+    //only send command if something is connected on the expansion port
+    static bool rumbleState = 0;
+    if(status.status0 == 0x01 && status.rumble != rumbleState) {
+        delayMicroseconds(100);
+        n64_setRumble(pin, status.rumble);
+        delayMicroseconds(100);
+    }
+    rumbleState = status.rumble;
+
     // Read the controller, abort if it fails.
     if (!n64_read(pin, &report))
     {
@@ -97,29 +127,27 @@ bool CN64Controller::read(void)
 }
 
 
-// TODO
-// bool CN64Controller::getRumble(void)
-// {
-//     // Read controller (rumble) state
-//     return status.rumble;
-// }
+bool CN64Controller::getRumble(void)
+{
+    // Read controller (rumble) state
+    return status.rumble;
+}
 
 
-// TODO
-// bool CN64Controller::setRumble(bool rumble)
-// {
-//     // Read controller (rumble) state and set new state
-//     bool oldRumble = getRumble();
-//     status.rumble = rumble;
-//     return oldRumble;
-// }
+bool CN64Controller::setRumble(bool rumble)
+{
+    // Read controller (rumble) state and set new state
+    bool oldRumble = getRumble();
+    status.rumble = rumble;
+    return oldRumble;
+}
 
 
 bool CN64Controller::end(void)
 {
     // Try to init the controller
     // TODO rumble
-    if (connected() /* || getRumble() */)
+    if (connected() || getRumble())
     {
         // Reset in any case, as some bytes may have been written.
         N64_Report_t tmp;

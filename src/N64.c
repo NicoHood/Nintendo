@@ -41,7 +41,6 @@ bool n64_init(const uint8_t pin, N64_Status_t* status)
     return (receivedBytes == sizeof(N64_Status_t));
 }
 
-
 bool n64_read(const uint8_t pin, N64_Report_t* report)
 {
     // Command to send to the N64
@@ -53,6 +52,30 @@ bool n64_read(const uint8_t pin, N64_Report_t* report)
     // Return status information for optional use.
     // On error the report may have been modified!
     return (receivedBytes == sizeof(N64_Report_t));
+}
+
+void n64_writeRumble(const uint8_t pin, uint8_t writeVal) {
+    uint8_t writeRequest[35];
+    writeRequest[0] = 0x03;
+    writeRequest[1] = 0x80;
+    writeRequest[2] = 0x01;
+    memset(writeRequest + 3, writeVal, 32);
+    uint8_t writeResponse[1];
+    uint8_t receivedBytes = gc_n64_send_get(pin, writeRequest, sizeof(writeRequest), (uint8_t*)&writeResponse, sizeof(writeResponse));
+
+    uint8_t readRequest[3] = {0x02, 0x80, 0x01};
+    uint8_t readResponse[32];
+    uint8_t receivedBytes2 = gc_n64_send_get(pin, readRequest, sizeof(readRequest), (uint8_t*)&readResponse, sizeof(readResponse));
+}
+
+void n64_setRumble(const uint8_t pin, bool rumble) {
+    uint8_t request[35];
+    request[0] = 0x03;
+    request[1] = 0xc0;
+    request[2] = 0x1b;
+    memset(request + 3, rumble ? 0x01 : 0x00, 32);
+    uint8_t response[1];
+    uint8_t receivedBytes = gc_n64_send_get(pin, request, sizeof(request), (uint8_t*)&response, sizeof(response));
 }
 
 
