@@ -45,7 +45,7 @@ public:
     inline bool connected(void);
     inline bool read(void);
     inline bool getRumble(void);
-    //inline bool setRumble(bool rumble);
+    inline bool setRumble(bool rumble);
     inline bool end(void);
     inline N64_Status_t getStatus(void);
     inline N64_Report_t getReport(void);

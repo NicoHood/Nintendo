@@ -106,6 +106,10 @@ bool n64_init(const uint8_t pin, N64_Status_t* status);
 bool n64_read(const uint8_t pin, N64_Report_t* report);
 uint8_t n64_write(const uint8_t pin, N64_Status_t* status, N64_Report_t* report);
 
+// Functions to communicate with the rumble pak
+void n64_writeRumble(const uint8_t pin, uint8_t writeVal);
+void n64_setRumble(const uint8_t pin, bool rumble);
+
 #ifdef __cplusplus
 }
 #endif

@@ -41,6 +41,16 @@ void loop()
     auto status = N64Controller.getStatus();
     auto report = N64Controller.getReport();
     print_n64_report(report, status);
+
+    // Rumble if button "A" was pressed
+    if (report.a)
+    {
+      N64Controller.setRumble(true);
+    }
+    else
+    {
+      N64Controller.setRumble(false);
+    }
     delay(100);
   }
   else
@@ -70,6 +80,13 @@ void print_n64_report(N64_Report_t &n64_report, N64_Status_t &n64_status)
       Serial.println(n64_status.device, HEX);
       break;
   }
+
+  // Print rumble state
+  Serial.print(F("Rumble "));
+  if (n64_status.rumble)
+    Serial.println(F("on"));
+  else
+    Serial.println(F("off"));
 
   // Prints the raw data from the controller
   Serial.println();
