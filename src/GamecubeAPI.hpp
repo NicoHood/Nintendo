@@ -87,8 +87,7 @@ bool CGamecubeController::read(void)
         }
     }
 
-
-    if (status.device == NINTENDO_DEVICE_GC_WIRED)
+    if (status.device != NINTENDO_DEVICE_GC_NONE && status.device != NINTENDO_DEVICE_GC_KEYBOARD)
     {
         // Read the controller, abort if it fails.
         // Additional information: If you press X + Y + Start on the controller for 3 seconds
